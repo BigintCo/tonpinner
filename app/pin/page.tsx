@@ -1,5 +1,5 @@
 'use client';
-import Image, { StaticImageData } from "next/image";
+import Image, {  } from "next/image";
 import human from "@/public/pinnerimages/human.png";
 import photo from "@/public/pinnerimages/photo.svg";
 import sticker from "@/public/pinnerimages/sticker-1.svg";

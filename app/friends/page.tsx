@@ -1,16 +1,14 @@
 'use client';
-import Image, { StaticImageData } from "next/image";
+import Image, {  } from "next/image";
 import human from "@/public/pinnerimages/human.png";
 import envelop from "@/public/pinnerimages/envelop.png";
 import search from "@/public/images/search.svg";
-import map from "@/public/pinnerimages/Ekran Resmi 2024-11-16 15.49.12.png";
 import heart from "@/public/pinnerimages/heart.svg";
 import Link from "next/link";
 import userIcon from "@/public/pinnerimages/usericon.svg";
 import usersIcon from "@/public/pinnerimages/usersicon.svg";
 import location from "@/public/pinnerimages/locaition.svg";
 import rocket from "@/public/pinnerimages/rocket.svg";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 type IPlace = {
   day: string;
