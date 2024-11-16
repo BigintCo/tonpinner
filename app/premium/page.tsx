@@ -6,6 +6,7 @@ import tonicon from "@/public/pinnerimages/toncoin-ton-logo.svg";
 import leftArrow from "@/public/images/right-arrow.svg";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { TonConnectButton } from "@tonconnect/ui-react";
 
 export default function Premium() {
   const router = useRouter();
@@ -68,9 +69,10 @@ export default function Premium() {
             </div>
           </div>
         </div>
-        <button className="rounded-lg py-2 px-4 w-full flex justify-center items-center bg-pinner text-white">
+        {/* <button className="rounded-lg py-2 px-4 w-full flex justify-center items-center bg-pinner text-white">
           Ton Connect
-        </button>
+        </button> */}
+          <TonConnectButton />
       </div>
     </div>
   );

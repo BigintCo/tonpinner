@@ -1,3 +1,4 @@
+'use client';
 import "tailwindcss/tailwind.css";
 
 import type { Metadata } from "next";
@@ -5,8 +6,11 @@ import localFont from "next/font/local";
 
 import "@/public/style/scroll.css";
 import "@/public/style/globals.css";
-import { TonConnectUIProvider } from "@tonconnect/ui-react";
-
+import dynamic from "next/dynamic";
+const TonConnectUIProvider = dynamic(
+  () => import("@tonconnect/ui-react").then((mod) => mod.TonConnectUIProvider),
+  { ssr: false } // SSR devre dışı
+);
 const poppins = localFont({
   src: [
     {
@@ -108,10 +112,7 @@ const poppins = localFont({
   variable: "--poppins",
 });
 
-export const metadata: Metadata = {
-  title: "TonPinner",
-  description: "TonPinner",
-};
+
 
 export default function RootLayout({
   children,
