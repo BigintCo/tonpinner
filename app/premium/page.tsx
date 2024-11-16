@@ -1,6 +1,7 @@
 import React from 'react'
 import kingLogo from '@/public/pinnerimages/kinglogo.svg';
 import tick from '@/public/pinnerimages/tick.svg';
+import tonicon from '@/public/pinnerimages/toncoin-ton-logo.svg';
 import Image from 'next/image';
 
 export default function Premium() {
@@ -26,14 +27,27 @@ export default function Premium() {
             </div>
             <div className='w-full px-8 py-4 flex flex-col justify-center items-center gap-4'>
                 <div className='w-full flex flex-col justify-center items-center gap-2'>
-                    <div className='rounded-lg py-2 px-4 w-full flex justify-between items-center bg-blue-300/30'>
-                        <span>Monthly</span>
-                        <div><span className='font-semibold text-lg'>$1.99</span> /Month</div>
+                    <div className=' rounded-lg py-2 px-4 w-full flex justify-between items-center bg-blue-300/30'>
+                        <span className='w-full'>Monthly</span>
+                        <div className='w-full flex justify-end items-center gap-2'>
+                            <span className='w-full font-semibold text-lg flex justify-end items-center gap-2'>
+                                <Image alt='fff' className='w-6' src={tonicon}></Image>
+                                1.99
+                            </span>
+                            /Month
+                        </div>
                     </div>
                     <div className='rounded-lg py-2 px-4 w-full flex justify-between items-center border border-blue-600/30'>
-                        <span>Monthly</span>
-                        <div><span className='font-semibold text-lg'>$1.99</span> /Month</div>
+                        <span className='w-full'>Yearly</span>
+                        <div className='w-full flex justify-end items-center gap-2'>
+                            <span className='w-full font-semibold text-lg flex justify-end items-center gap-2'>
+                                <Image alt='fff' className='w-6' src={tonicon}></Image>
+                                1.99
+                            </span>
+                            /Month
+                        </div>
                     </div>
+                   
                 </div>
                 <button className='rounded-lg py-2 px-4 w-full flex justify-center items-center bg-pinner text-white'>
                     Ton Connect
