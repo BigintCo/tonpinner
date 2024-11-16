@@ -1,0 +1,51 @@
+/* Scrollbar stylings */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(11, 10, 12, 0);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 204, 0, 0.17);
+    border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(188, 159, 71, 0.27);
+}
+
+
+.webkit-custom-color::-webkit-scrollbar {
+    width: 10px;
+}
+
+.webkit-custom-color::-webkit-scrollbar-track {
+    background: rgba(237, 219, 103, 0.5);
+    border-radius: 20px;
+}
+
+.webkit-custom-color::-webkit-scrollbar-thumb {
+    background: rgba(237, 219, 103, 0.5);
+    border-radius: 20px;
+}
+
+.webkit-custom-color.smwidth::-webkit-scrollbar {
+    width: 6px;
+    height: 4px;
+}
+
+.webkit-custom-color.norounded::-webkit-scrollbar-track {
+    border-radius: 0px;
+}
+
+.webkit-custom-color.norounded::-webkit-scrollbar-thumb {
+    border-radius: 0px;
+}
+
+
+.scroll-hidden::-webkit-scrollbar {
+    display: none !important;
+}
