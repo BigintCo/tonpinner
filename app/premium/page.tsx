@@ -1,15 +1,33 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import kingLogo from "@/public/pinnerimages/kinglogo.svg";
 import tick from "@/public/pinnerimages/tick.svg";
 import tonicon from "@/public/pinnerimages/toncoin-ton-logo.svg";
 import leftArrow from "@/public/images/right-arrow.svg";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { TonConnectButton } from "@tonconnect/ui-react";
+import { SendTransactionRequest, TonConnectButton, useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
+
 
 export default function Premium() {
+  const transaction: SendTransactionRequest = {
+    validUntil: Date.now() + 5 * 60 * 1000, // 5 minutes
+    messages: [
+      {
+        address:
+          "UQAQLI0EVvO6M96aMXbi5xwTyQGxXGP4rxrFV6fCvdHRUvVZ", // message destination in user-friendly format
+        amount: "1000000", // Toncoin in nanotons
+      },
+    ],
+  };
+  const wallet = useTonWallet();
+  useEffect(() => {
+    if (wallet) {
+      console.log(wallet, 'wallet');
+    }
+  }, [wallet]);
   const router = useRouter();
+  const [tonConnectUI, setOptions] = useTonConnectUI();
   return (
     <div className="w-full h-screen relative">
       <div
@@ -69,10 +87,17 @@ export default function Premium() {
             </div>
           </div>
         </div>
-        {/* <button className="rounded-lg py-2 px-4 w-full flex justify-center items-center bg-pinner text-white">
-          Ton Connect
-        </button> */}
+        {
+          wallet &&
+          <button onClick={() => tonConnectUI.sendTransaction(transaction)}
+          className="rounded-lg py-2 px-4 w-full flex justify-center items-center bg-pinner text-white">
+            Purchase
+          </button>}
+        {
+          !wallet &&
           <TonConnectButton />
+        }
+
       </div>
     </div>
   );

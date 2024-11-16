@@ -1,7 +1,7 @@
 'use client';
-import Image, {  } from "next/image";
+import Image, { } from "next/image";
 import human from "@/public/pinnerimages/human.png";
-import envelop from "@/public/pinnerimages/envelop.png";
+import envelop from "@/public/pinnerimages/wallet-svgrepo-com.svg";
 import search from "@/public/images/search.svg";
 import heart from "@/public/pinnerimages/heart.svg";
 import Link from "next/link";
@@ -10,6 +10,8 @@ import usersIcon from "@/public/pinnerimages/usersicon.svg";
 import location from "@/public/pinnerimages/locaition.svg";
 import rocket from "@/public/pinnerimages/rocket.svg";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { TonConnectButton } from "@tonconnect/ui-react";
 type IPlace = {
   day: string;
   userName: string;
@@ -56,6 +58,7 @@ export default function Home() {
       date: "24 Feb",
     },
   ];
+  const [openMenu, setOpenMenu] = useState(false);
 
   return (
     <div className="w-full h-screen overflow-hidden flex flex-col items-start relative">
@@ -68,7 +71,7 @@ export default function Home() {
             <Image alt="search" src={search} className="w-4 aspect-square"></Image>
             <span>Search</span>
           </div>
-          <div className="w-12 aspect-square flex justify-center items-center">
+          <div onClick={() => setOpenMenu(true)} className="w-12 aspect-square flex justify-center items-center">
             <Image alt="envlp" src={envelop}></Image>
           </div>
         </div>
@@ -87,7 +90,7 @@ export default function Home() {
                 <div className="text-sm text-gray-500">{user.date}</div>
               </div>
               <div className="w-full flex justify-end items-center gap-4">
-                <Image onClick={()=> {router.push('/premium')}} src={rocket} alt="rocket"></Image>
+                <Image onClick={() => { router.push('/premium') }} src={rocket} alt="rocket"></Image>
                 <Image src={heart} alt="rocket"></Image>
               </div>
             </div>
@@ -105,6 +108,13 @@ export default function Home() {
           <Image alt="icon" src={usersIcon}></Image>
         </Link>
       </div>
+      {
+        openMenu &&
+        <div className="w-full h-[200px] absolute bottom-0 left-0 bg-white z-50 flex justify-center items-center rounded-t-xl  border-t border-blue-500">
+          <div onClick={() => { setOpenMenu(false) }} className="p-1 w-10 aspect-square rounded-full bg-pinner text-2xl flex justify-center items-center absolute top-4 right-4 text-white">X</div>
+          <TonConnectButton />
+        </div>
+      }
     </div>
   );
 }
