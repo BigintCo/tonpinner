@@ -36,11 +36,11 @@ export default function Pin() {
                     <Image alt="photo" src={points} className="w-6"></Image>
                 </div>
                 <label htmlFor="" className="w-full px-8 py-2 h-[150px] flex flex-col justify-start items-end gap-2">
-                    <input type="text" className="rounded-lg border border-blue-600/30 w-full h-full" />
+                    <textarea  className="rounded-lg border p-1 border-blue-600/30 w-full h-full focus-within:outline-none flex justify-start items-start" />
                     <Image alt="add" src={add}></Image>
                 </label>
             </div>
-            <div className="w-full flex justify-between items-center gap-2 px-8 py-2">
+            <div className="w-full flex justify-between items-center gap-2 px-8 py-2 sticky bottom-0">
                 <button className="w-full flex justify-center items-center py-2 px-4 rounded-lg border border-blue-600/30 text-sm text-pinner">Cancel</button>
                 <button className="w-full flex justify-center items-center py-2 px-4 rounded-lg border bg-pinner text-sm text-white">Pin Me</button>
             </div>
