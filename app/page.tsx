@@ -1,7 +1,6 @@
 'use client';
 import Image, { StaticImageData } from "next/image";
 import human from "@/public/pinnerimages/human.png";
-import envelop from "@/public/pinnerimages/envelop.png";
 import search from "@/public/images/search.svg";
 import map from "@/public/pinnerimages/Ekran Resmi 2024-11-16 15.49.12.png";
 import coffee from "@/public/pinnerimages/coffee.svg";
@@ -10,7 +9,9 @@ import userIcon from "@/public/pinnerimages/usericon.svg";
 import usersIcon from "@/public/pinnerimages/usersicon.svg";
 import location from "@/public/pinnerimages/locaition.svg";
 import hug from "@/public/pinnerimages/Hug.svg";
+import wallet from "@/public/pinnerimages/wallet-svgrepo-com.svg";
 import { useEffect, useState } from "react";
+import { TonConnectButton } from "@tonconnect/ui-react";
 type IPlace = {
   day: string;
   name: string;
@@ -55,6 +56,7 @@ export default function Home() {
     },
   ];
   const [openModal, setOpenModal] = useState(false);
+  const [openMenu, setOpenMenu] = useState(false);
   useEffect(() => {
     if (localStorage.getItem('firstPin')) {
       setOpenModal(true);
@@ -75,16 +77,17 @@ export default function Home() {
               <div className="text-xs text-gray-400">
                 Congratulations! You’re the first to pin this location! We noticed you’re a coffee lover, so we’ve awarded you this special sticker. This sticker is an on-chain SBT (Soulbound Token), meaning it’s a unique, non-transferable NFT. You can use this sticker in future pins to earn bonus points and boost your score. Enjoy your exclusive reward!
               </div>
-              <button 
-              onClick={() => {localStorage.removeItem('firstPin'); setOpenModal(false)}}
-              className="bg-pinner rounded-lg w-full py-2 flex justify-center items-center text-white">
+              <button
+                onClick={() => { localStorage.removeItem('firstPin'); setOpenModal(false) }}
+                className="bg-pinner rounded-lg w-full py-2 flex justify-center items-center text-white">
                 Claim
               </button>
             </div>
           </div>
         </div>
       }
-      <div className="bg-[#24A1DE] w-full px-8 py-4 ">
+      <div className="bg-[#24A1DE] w-full px-8 py-4 relative">
+
         <div className="w-full flex justify-between items-center gap-4">
           <div className="w-14 aspect-square rounded-full border-2 border-white">
             <Image alt="pp" src={human} className="w-14 aspect-square rounded-full" />
@@ -93,8 +96,8 @@ export default function Home() {
             <Image alt="search" src={search} className="w-4 aspect-square"></Image>
             <span>Search</span>
           </div>
-          <div className="w-12 aspect-square flex justify-center items-center">
-            <Image alt="envlp" src={envelop}></Image>
+          <div onClick={() => setOpenMenu(true)} className="w-12 aspect-square flex justify-center items-center">
+            <Image alt="envlp" src={wallet}></Image>
           </div>
         </div>
       </div>
@@ -157,6 +160,13 @@ export default function Home() {
           <Image alt="icon" src={usersIcon}></Image>
         </Link>
       </div>
+      {
+        openMenu &&
+        <div className="w-full h-[200px] absolute bottom-0 left-0 bg-white z-50 flex justify-center items-center rounded-t-xl  border-t border-blue-500">
+          <div onClick={()=>{setOpenMenu(false)}} className="p-1 w-10 aspect-square rounded-full bg-pinner text-2xl flex justify-center items-center absolute top-4 right-4 text-white">X</div>
+          <TonConnectButton />
+        </div>
+      }
     </div>
   );
 }
