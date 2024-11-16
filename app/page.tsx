@@ -1,7 +1,6 @@
 'use client';
 import Image, { StaticImageData } from "next/image";
 import human from "@/public/pinnerimages/human.png";
-import envelop from "@/public/pinnerimages/envelop.png";
 import search from "@/public/images/search.svg";
 import map from "@/public/pinnerimages/Ekran Resmi 2024-11-16 15.49.12.png";
 import coffee from "@/public/pinnerimages/coffee.svg";

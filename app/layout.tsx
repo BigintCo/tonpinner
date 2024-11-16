@@ -1,7 +1,6 @@
 'use client';
 import "tailwindcss/tailwind.css";
 
-import type { Metadata } from "next";
 import localFont from "next/font/local";
 
 import "@/public/style/scroll.css";
