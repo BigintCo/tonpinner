@@ -30,7 +30,7 @@ export default function Stickers() {
     }, []);
 
     return (
-        <div className='w-full h-screen'>
+        <div className='w-full h-screen bg-white'>
             <div className='bg-pinner px-8 py-4 flex justify-start items-center gap-2 text-white'>
                 <Image onClick={()=> router.push('/pin')} src={leftArrow} className='rotate-180' alt='left'></Image>
                 Osman's Stickers Book
