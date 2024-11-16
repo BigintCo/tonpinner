@@ -53,8 +53,8 @@ export default function Home() {
     },
   ];
   return (
-    <div className="w-full h-screen overflow-hidden flex flex-col justify-between items-start">
-      <div className="bg-[#24A1DE] w-full px-8 py-4">
+    <div className="w-full h-screen overflow-hidden flex flex-col  items-start">
+      <div className="bg-[#24A1DE] w-full px-8 py-4 ">
         <div className="w-full flex justify-between items-center gap-4">
           <div className="w-14 aspect-square rounded-full border-2 border-white">
             <Image alt="pp" src={human} className="w-14 aspect-square rounded-full" />
@@ -68,7 +68,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="w-full px-8 py-4 rounded-lg flex flex-col justify-start items-start gap-3">
+      <div className="w-full  px-8 py-4 rounded-lg flex flex-col justify-start items-start gap-3">
         <Image alt="map" src={map} className="rounded-lg"></Image>
         <div className="w-full flex justify-between items-center ">
           <button className="rounded-full bg-[#24A1DE] p-2 flex justify-center items-center text-xs text-white">
@@ -81,11 +81,11 @@ export default function Home() {
             36/100 Categories
           </button>
         </div>
+        <div className="w-full flex justify-start items-center gap-2 px-8 py-1 text-xs  border-t border-b border-gray-600/10">
+          <span className="text-pinner font-bold">400 </span> Check-ins
+        </div>
       </div>
-      <div className="w-full flex justify-start items-center gap-2 px-8 py-1 text-xs  border-t border-b border-gray-600/10">
-        <span className="text-pinner font-bold">400 </span> Check-ins
-      </div>
-      <div className="w-full flex flex-col justify-start items-start gap-5 px-8 py-4 overflow-scroll scroll-hidden h-[40vh]">
+      <div className="w-full flex flex-col justify-start items-start gap-5 px-8 py-4 overflow-scroll scroll-hidden h-[60vh]">
         {
           places.map((place, index) => (
             <div key={index} className="w-full flex flex-col justify-start items-start gap-5">
@@ -117,13 +117,13 @@ export default function Home() {
         }
       </div>
       <div className="w-full flex justify-between items-end px-8 py-2 relative">
-        <Link href={''}  className="w-8 aspect-auto">
+        <Link href={''} className="w-8 aspect-auto">
           <Image alt="icon" src={userIcon}></Image>
         </Link>
-        <Link href={''}  className="w-12 flex justify-center items-center aspect-auto rounded-full p-2 shadow-md absolute left-1/2 -translate-x-1/2 -top-1/2 bg-white">
+        <Link href={'/pin'} className="w-12 flex justify-center items-center aspect-auto rounded-full p-2 shadow-md absolute left-1/2 -translate-x-1/2 -top-1/2 bg-white">
           <Image alt="icon" src={location} className="w-6"></Image>
         </Link>
-        <Link href={''}  className="w-12 aspect-auto">
+        <Link href={''} className="w-12 aspect-auto">
           <Image alt="icon" src={usersIcon}></Image>
         </Link>
       </div>
