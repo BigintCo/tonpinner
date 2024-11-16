@@ -29,7 +29,7 @@ export default function Premium() {
   const router = useRouter();
   const [tonConnectUI, setOptions] = useTonConnectUI();
   return (
-    <div className="w-full h-screen relative">
+    <div className="w-full h-screen relative bg-white">
       <div
         className="absolute top-4 left-4 text-white"
         onClick={() => {

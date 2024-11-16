@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 export default function Pin() {
     const router = useRouter();
     return (
-        <div className="w-full h-screen overflow-hidden flex flex-col items-start justify-between">
+        <div className="w-full h-screen overflow-hidden flex flex-col items-start justify-between bg-white">
             <div className="w-full flex flex-col items-start">
                 <div className="bg-[#24A1DE] w-full px-8 py-4">
                     <div className="w-full flex justify-start items-center gap-4">

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import "tailwindcss/tailwind.css";
 
 import localFont from "next/font/local";
@@ -110,8 +110,6 @@ const poppins = localFont({
   ],
   variable: "--poppins",
 });
-
-
 
 export default function RootLayout({
   children,
