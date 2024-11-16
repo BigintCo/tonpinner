@@ -1,12 +1,19 @@
+'use client';
 import React from 'react'
 import kingLogo from '@/public/pinnerimages/kinglogo.svg';
 import tick from '@/public/pinnerimages/tick.svg';
 import tonicon from '@/public/pinnerimages/toncoin-ton-logo.svg';
+import leftArrow from '@/public/images/right-arrow.svg';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function Premium() {
+    const router = useRouter();
     return (
-        <div className='w-full h-screen'>
+        <div className='w-full h-screen relative'>
+            <div className='absolute top-4 left-4 text-white' onClick={()=> {router.push('/')}}>
+                <Image alt='left' src={leftArrow} className='rotate-180'></Image>
+            </div>
             <div className='bg-pinner w-full'>
                 <div className='w-full flex flex-col justify-start items-center gap-4 px-8 py-4'>
                     <Image alt='ss' src={kingLogo} className='w-[250px] aspect-square'></Image>
