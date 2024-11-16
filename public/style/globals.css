@@ -134,3 +134,9 @@ body {
   background-color: #FF8A00; /* Aktif bullet rengi */
   transform: scale(1.2);/* Aktif bullet biraz daha büyük */
 }
+.text-pinner {
+  color: #24A1DE;
+}
+.bg-pinner {
+  background-color: #24A1DE;
+}
