@@ -10,7 +10,6 @@ export async function GET() {
         if (!response.ok) {
             throw new Error('Failed to fetch NFT data');
         }
-        console.log(response.json(),'response');
         const data = await response.json();
         return NextResponse.json(data);
     } catch (error) {
