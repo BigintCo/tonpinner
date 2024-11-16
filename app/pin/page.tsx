@@ -51,6 +51,7 @@ export default function Pin() {
                 <button
                     onClick={() => {
                         router.push("/");
+                        localStorage.setItem("firstPin", "true");
                     }}
                     className="w-full flex justify-center items-center py-2 px-4 rounded-lg border bg-pinner text-sm text-white">Pin Me</button>
             </div>

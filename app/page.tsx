@@ -10,6 +10,7 @@ import userIcon from "@/public/pinnerimages/usericon.svg";
 import usersIcon from "@/public/pinnerimages/usersicon.svg";
 import location from "@/public/pinnerimages/locaition.svg";
 import hug from "@/public/pinnerimages/Hug.svg";
+import { useEffect, useState } from "react";
 type IPlace = {
   day: string;
   name: string;
@@ -53,25 +54,36 @@ export default function Home() {
       ],
     },
   ];
+  const [openModal, setOpenModal] = useState(false);
+  useEffect(() => {
+    if (localStorage.getItem('firstPin')) {
+      setOpenModal(true);
+    }
+  }, []);
   return (
     <div className="w-full h-screen overflow-hidden flex flex-col items-start relative">
-      <div className="absolute top-0 left-0 w-screen h-screen bg-black/30 z-50 px-8 flex justify-center items-center">
-        <div className="w-full flex justify-between items-start gap-5 bg-white rounded-xl p-4">
-          <Image alt="hug" src={hug} className="w-12 aspect-square"></Image>
-          <div className="w-full flex flex-col justify-start items-start gap-2">
-            <div className="w-full flex flex-col justify-start items-start gap-1">
-              <span className="font-semibold">Coffe Lover</span>
-              <span className="text-sm">First Pinner</span>
+      {
+        openModal &&
+        <div className="absolute top-0 left-0 w-screen h-screen bg-black/30 z-50 px-8 flex justify-center items-center">
+          <div className="w-full flex justify-between items-start gap-5 bg-white rounded-xl p-4">
+            <Image alt="hug" src={hug} className="w-12 aspect-square"></Image>
+            <div className="w-full flex flex-col justify-start items-start gap-2">
+              <div className="w-full flex flex-col justify-start items-start gap-1">
+                <span className="font-semibold">Coffe Lover</span>
+                <span className="text-sm">First Pinner</span>
+              </div>
+              <div className="text-xs text-gray-400">
+                Congratulations! You’re the first to pin this location! We noticed you’re a coffee lover, so we’ve awarded you this special sticker. This sticker is an on-chain SBT (Soulbound Token), meaning it’s a unique, non-transferable NFT. You can use this sticker in future pins to earn bonus points and boost your score. Enjoy your exclusive reward!
+              </div>
+              <button 
+              onClick={() => {localStorage.removeItem('firstPin'); setOpenModal(false)}}
+              className="bg-pinner rounded-lg w-full py-2 flex justify-center items-center text-white">
+                Claim
+              </button>
             </div>
-            <div className="text-xs text-gray-400">
-            Congratulations! You’re the first to pin this location! We noticed you’re a coffee lover, so we’ve awarded you this special sticker. This sticker is an on-chain SBT (Soulbound Token), meaning it’s a unique, non-transferable NFT. You can use this sticker in future pins to earn bonus points and boost your score. Enjoy your exclusive reward!
-            </div>
-          <button className="bg-pinner rounded-lg w-full py-2 flex justify-center items-center text-white">
-            Claim
-          </button>
           </div>
         </div>
-      </div>
+      }
       <div className="bg-[#24A1DE] w-full px-8 py-4 ">
         <div className="w-full flex justify-between items-center gap-4">
           <div className="w-14 aspect-square rounded-full border-2 border-white">
@@ -141,7 +153,7 @@ export default function Home() {
         <Link href={'/pin'} className="w-12 flex justify-center items-center aspect-auto rounded-full p-2 shadow-md absolute left-1/2 -translate-x-1/2 -top-1/2 bg-white">
           <Image alt="icon" src={location} className="w-6"></Image>
         </Link>
-        <Link href={''} className="w-12 aspect-auto">
+        <Link href={'/friends'} className="w-12 aspect-auto">
           <Image alt="icon" src={usersIcon}></Image>
         </Link>
       </div>
