@@ -9,7 +9,7 @@ import sticker4 from "@/public/pinnerimages/sticker-4.png";
 import sticker5 from "@/public/pinnerimages/sticker-5.png";
 import points from "@/public/pinnerimages/points.png";
 import add from "@/public/pinnerimages/􀉰.svg";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function Pin() {
     const router = useRouter();
