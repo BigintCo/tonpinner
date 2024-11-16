@@ -30,12 +30,12 @@ export default function Pin() {
                 <div className="w-full flex justify-start items-center gap-3 px-8 py-4">
                     <Image alt="photo" src={photo} className="w-10 aspect-square"></Image>
                     <div className="w-[1px] h-full bg-blue-500"></div>
-                    <Image alt="photo" src={sticker} className="w-10 aspect-square"></Image>
-                    <Image alt="photo" src={sticker2} className="w-10 aspect-square"></Image>
-                    <Image alt="photo" src={sticker3} className="w-10 aspect-square"></Image>
-                    <Image alt="photo" src={sticker4} className="w-10 aspect-square"></Image>
-                    <Image alt="photo" src={sticker5} className="w-10 aspect-square"></Image>
-                    <Image alt="photo" src={points} className="w-6"></Image>
+                    <Image onClick={()=>{router.push('/stickers')}} alt="photo" src={sticker} className="w-10 aspect-square"></Image>
+                    <Image onClick={()=>{router.push('/stickers')}} alt="photo" src={sticker2} className="w-10 aspect-square"></Image>
+                    <Image onClick={()=>{router.push('/stickers')}} alt="photo" src={sticker3} className="w-10 aspect-square"></Image>
+                    <Image onClick={()=>{router.push('/stickers')}} alt="photo" src={sticker4} className="w-10 aspect-square"></Image>
+                    <Image onClick={()=>{router.push('/stickers')}} alt="photo" src={sticker5} className="w-10 aspect-square"></Image>
+                    <Image onClick={()=>{router.push('/stickers')}} alt="photo" src={points} className="w-6"></Image>
                 </div>
                 <label htmlFor="" className="w-full px-8 py-2 h-[150px] flex flex-col justify-start items-end gap-2">
                     <textarea className="rounded-lg border p-1 border-blue-600/30 w-full h-full focus-within:outline-none flex justify-start items-start" />
