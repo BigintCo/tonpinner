@@ -10,34 +10,11 @@ import sticker5 from "@/public/pinnerimages/sticker-5.png";
 import points from "@/public/pinnerimages/points.png";
 import add from "@/public/pinnerimages/􀉰.svg";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
 export default function Pin() {
     const router = useRouter();
-    const [viewHeight, setViewHeight] = useState("100vh");
-
-  useEffect(() => {
-    const handleViewportChange = () => {
-      if (window.visualViewport) {
-        setViewHeight(`${window.visualViewport.height}px`);
-      }
-    };
-
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener("resize", handleViewportChange);
-      handleViewportChange();
-    }
-
-    return () => {
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener("resize", handleViewportChange);
-      }
-    };
-  }, []);
     return (
-        <div
-        style={{ height: viewHeight }} 
-        className="w-full h-screen overflow-hidden flex flex-col items-start justify-between bg-white">
+        <div className="w-full h-screen overflow-hidden flex flex-col items-start justify-between bg-white">
             <div className="w-full flex flex-col items-start">
                 <div className="bg-[#24A1DE] w-full px-8 py-4">
                     <div className="w-full flex justify-start items-center gap-4">
@@ -64,8 +41,7 @@ export default function Pin() {
                     <textarea className="rounded-lg border p-1 border-blue-600/30 w-full h-full focus-within:outline-none flex justify-start items-start" />
                     <Image alt="add" src={add}></Image>
                 </label>
-            </div>
-            <div className="w-full flex justify-between items-center gap-2 px-8 py-2 fixed bottom-0 inset-x-0 bottom-safe">
+                <div className="w-full flex justify-between items-center gap-2 px-8 py-2 ">
                 <button
                     onClick={() => {
                         router.push("/");
@@ -78,6 +54,8 @@ export default function Pin() {
                     }}
                     className="w-full flex justify-center items-center py-2 px-4 rounded-lg border bg-pinner text-sm text-white">Pin Me</button>
             </div>
+            </div>
+            
         </div>
     )
 }
