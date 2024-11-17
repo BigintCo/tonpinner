@@ -1,8 +1,8 @@
+// @typescript-eslint/no-explicit-any
 'use client';
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import leftArrow from '@/public/images/right-arrow.svg'
-import { NextApiRequest, NextApiResponse } from 'next';
 import { useRouter } from 'next/navigation';
 
 export default function Stickers() {
@@ -16,7 +16,7 @@ export default function Stickers() {
     }
     const [nfts, setNfts] = useState<any[] | null>(null);
     const [error, setError] = useState<string | null>(null);
-
+    useEffect(() => { }, [error]);
     useEffect(() => {
         async function loadNFTs() {
             try {
@@ -32,14 +32,14 @@ export default function Stickers() {
     return (
         <div className='w-full h-screen bg-white'>
             <div className='bg-pinner px-8 py-4 flex justify-start items-center gap-2 text-white'>
-                <Image onClick={()=> router.push('/pin')} src={leftArrow} className='rotate-180' alt='left'></Image>
+                <Image onClick={() => router.push('/pin')} src={leftArrow} className='rotate-180' alt='left'></Image>
                 Osman's Stickers Book
             </div>
             <div className='w-full grid grid-cols-12 justify-start items-center gap-2 py-2 px-8'>
                 {
                     nfts?.map((nft, index) => (
                         <div key={index} className='col-span-3 aspect-square'>
-                            <img src={nft.metadata.image} alt='sticker'  className='w-full aspect-square'></img>
+                            <img src={nft.metadata.image} alt='sticker' className='w-full aspect-square'></img>
                         </div>
                     ))
                 }

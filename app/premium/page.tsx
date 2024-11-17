@@ -27,7 +27,7 @@ export default function Premium() {
     }
   }, [wallet]);
   const router = useRouter();
-  const [tonConnectUI, setOptions] = useTonConnectUI();
+  const [tonConnectUI] = useTonConnectUI();
   return (
     <div className="w-full h-screen relative bg-white">
       <div
