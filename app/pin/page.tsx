@@ -42,7 +42,7 @@ export default function Pin() {
                     <Image alt="add" src={add}></Image>
                 </label>
             </div>
-            <div className="w-full flex justify-between items-center gap-2 px-8 py-2 sticky bottom-0">
+            <div className="w-full flex justify-between items-center gap-2 px-8 py-2 fixed bottom-0">
                 <button
                     onClick={() => {
                         router.push("/");
