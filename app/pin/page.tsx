@@ -10,11 +10,34 @@ import sticker5 from "@/public/pinnerimages/sticker-5.png";
 import points from "@/public/pinnerimages/points.png";
 import add from "@/public/pinnerimages/􀉰.svg";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Pin() {
     const router = useRouter();
+    const [viewHeight, setViewHeight] = useState("100vh");
+
+  useEffect(() => {
+    const handleViewportChange = () => {
+      if (window.visualViewport) {
+        setViewHeight(`${window.visualViewport.height}px`);
+      }
+    };
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", handleViewportChange);
+      handleViewportChange();
+    }
+
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener("resize", handleViewportChange);
+      }
+    };
+  }, []);
     return (
-        <div className="w-full h-screen overflow-hidden flex flex-col items-start justify-between bg-white">
+        <div
+        style={{ height: viewHeight }} 
+        className="w-full h-screen overflow-hidden flex flex-col items-start justify-between bg-white">
             <div className="w-full flex flex-col items-start">
                 <div className="bg-[#24A1DE] w-full px-8 py-4">
                     <div className="w-full flex justify-start items-center gap-4">
