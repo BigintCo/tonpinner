@@ -67,7 +67,7 @@ export default function Home() {
       setOpenModal(true);
     }
   }, []);
-  
+
   const [tonConnectUI] = useTonConnectUI();
   const myWallet = useTonWallet();
 
@@ -85,7 +85,7 @@ export default function Home() {
             owner_address: Address.parse(myWallet?.account.address!),
             authority_address: Address.parse(myWallet?.account.address!),
             content: beginCell().endCell()
-        }).toBoc().toString('base64'),
+          }).toBoc().toString('base64'),
         },
       ],
     };
@@ -106,11 +106,18 @@ export default function Home() {
               <div className="text-xs text-gray-400">
                 Congratulations! You’re the first to pin this location! We noticed you’re a coffee lover, so we’ve awarded you this special sticker. This sticker is an on-chain SBT (Soulbound Token), meaning it’s a unique, non-transferable NFT. You can use this sticker in future pins to earn bonus points and boost your score. Enjoy your exclusive reward!
               </div>
-              <button
-                onClick={() => { localStorage.removeItem('firstPin'); setOpenModal(false); mintNft(); }}
-                className="bg-pinner rounded-lg w-full py-2 flex justify-center items-center text-white">
-                Claim
-              </button>
+              {
+                myWallet &&
+                <button
+                  onClick={() => { localStorage.removeItem('firstPin'); setOpenModal(false); mintNft(); }}
+                  className="bg-pinner rounded-lg w-full py-2 flex justify-center items-center text-white">
+                  Claim
+                </button>
+              }
+              {
+                !myWallet &&
+                <TonConnectButton />
+              }
             </div>
           </div>
         </div>
