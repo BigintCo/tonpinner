@@ -13,6 +13,7 @@ import wallet from "@/public/pinnerimages/wallet-svgrepo-com.svg";
 import { useEffect, useState } from "react";
 import { TonConnectButton } from "@tonconnect/ui-react";
 import diamond from "@/public/pinnerimages/toncoin-ton-logo.svg";
+import { useRouter } from "next/navigation";
 type IPlace = {
   day: string;
   name: string;
@@ -22,6 +23,7 @@ type IPlace = {
   humans: { image: StaticImageData }[];
 };
 export default function Home() {
+  const router = useRouter();
   const places: IPlace[] = [
     {
       day: "24 February 2024",
@@ -115,7 +117,7 @@ export default function Home() {
             36/100 Categories
           </button>
         </div>
-        <button className="w-full flex justify-center items-center gap-2 p-2 text-pinner border border-blue-500/50 rounded-3xl">
+        <button onClick={()=> router.push('/premium')} className="w-full flex justify-center items-center gap-2 p-2 text-pinner border border-blue-500/50 rounded-3xl">
             <Image alt="diamond" src={diamond} className="w-8 aspect-square"></Image>
             Get Premium
         </button>
