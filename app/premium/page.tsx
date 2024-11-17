@@ -20,6 +20,7 @@ export default function Premium() {
       },
     ],
   };
+  
   const wallet = useTonWallet();
   useEffect(() => {
     if (wallet) {

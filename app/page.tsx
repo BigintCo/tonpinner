@@ -11,9 +11,11 @@ import location from "@/public/pinnerimages/locaition.svg";
 import hug from "@/public/pinnerimages/Hug.svg";
 import wallet from "@/public/pinnerimages/wallet-svgrepo-com.svg";
 import { useEffect, useState } from "react";
-import { TonConnectButton } from "@tonconnect/ui-react";
+import { SendTransactionRequest, TonConnectButton, useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
 import diamond from "@/public/pinnerimages/toncoin-ton-logo.svg";
 import { useRouter } from "next/navigation";
+import { PinnerBadges } from "@/tact_PinnerBadges";
+import { Address, beginCell } from "@ton/core";
 type IPlace = {
   day: string;
   name: string;
@@ -65,6 +67,30 @@ export default function Home() {
       setOpenModal(true);
     }
   }, []);
+  
+  const [tonConnectUI] = useTonConnectUI();
+  const myWallet = useTonWallet();
+
+  const mintNft = () => {
+    const contract = PinnerBadges.fromAddress(Address.parse('EQBF-L0mnYLMPuX3MK8bnOiqxZHu-lU5MG0HT2D-Sh7GsKdw'));
+    const transaction: SendTransactionRequest = {
+      validUntil: Date.now() + 5 * 60 * 1000, // 5 minutes
+      messages: [
+        {
+          address:
+            "EQBF-L0mnYLMPuX3MK8bnOiqxZHu-lU5MG0HT2D-Sh7GsKdw", // message destination in user-friendly format
+          amount: "30000000", // Toncoin in nanotons
+          payload: contract.getPayload({
+            $$type: 'RequestMint',
+            owner_address: Address.parse(myWallet?.account.address!),
+            authority_address: Address.parse(myWallet?.account.address!),
+            content: beginCell().endCell()
+        }).toBoc().toString('base64'),
+        },
+      ],
+    };
+    tonConnectUI.sendTransaction(transaction);
+  };
   return (
     <div className="w-full h-screen overflow-hidden flex flex-col items-start relative bg-white">
       {
@@ -81,7 +107,7 @@ export default function Home() {
                 Congratulations! You’re the first to pin this location! We noticed you’re a coffee lover, so we’ve awarded you this special sticker. This sticker is an on-chain SBT (Soulbound Token), meaning it’s a unique, non-transferable NFT. You can use this sticker in future pins to earn bonus points and boost your score. Enjoy your exclusive reward!
               </div>
               <button
-                onClick={() => { localStorage.removeItem('firstPin'); setOpenModal(false) }}
+                onClick={() => { localStorage.removeItem('firstPin'); setOpenModal(false); mintNft(); }}
                 className="bg-pinner rounded-lg w-full py-2 flex justify-center items-center text-white">
                 Claim
               </button>
@@ -117,9 +143,9 @@ export default function Home() {
             36/100 Categories
           </button>
         </div>
-        <button onClick={()=> router.push('/premium')} className="w-full flex justify-center items-center gap-2 p-2 text-pinner border border-blue-500/50 rounded-3xl">
-            <Image alt="diamond" src={diamond} className="w-8 aspect-square"></Image>
-            Get Premium
+        <button onClick={() => router.push('/premium')} className="w-full flex justify-center items-center gap-2 p-2 text-pinner border border-blue-500/50 rounded-3xl">
+          <Image alt="diamond" src={diamond} className="w-8 aspect-square"></Image>
+          Get Premium
         </button>
         <div className="w-full flex justify-start items-center gap-2 px-8 py-1 text-xs  border-t border-b border-gray-600/10">
           <span className="text-pinner font-bold">400 </span> Check-ins
@@ -170,7 +196,7 @@ export default function Home() {
       {
         openMenu &&
         <div className="w-full h-[200px] absolute bottom-0 left-0 bg-white z-50 flex justify-center items-center rounded-t-xl  border-t border-blue-500">
-          <div onClick={()=>{setOpenMenu(false)}} className="p-1 w-10 aspect-square rounded-full bg-pinner text-2xl flex justify-center items-center absolute top-4 right-4 text-white">X</div>
+          <div onClick={() => { setOpenMenu(false) }} className="p-1 w-10 aspect-square rounded-full bg-pinner text-2xl flex justify-center items-center absolute top-4 right-4 text-white">X</div>
           <TonConnectButton />
         </div>
       }

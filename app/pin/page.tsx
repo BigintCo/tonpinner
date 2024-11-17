@@ -23,7 +23,7 @@ export default function Pin() {
         }
         return response.json();
     }
-   
+
     const [nfts, setNfts] = useState<any[] | null>(null);
     const [error, setError] = useState<string | null>(null);
     useEffect(() => { }, [error]);
@@ -36,8 +36,10 @@ export default function Pin() {
                 setError(err.message); // Hata varsa state'e ata
             }
         }
-        loadNFTs();
-    }, []);
+        if (myWallet) {
+            loadNFTs();
+        }
+    }, [myWallet]);
     return (
         <div className="w-full h-screen overflow-hidden flex flex-col items-start justify-between bg-white">
             <div className="w-full flex flex-col items-start">
@@ -55,13 +57,19 @@ export default function Pin() {
                 <div className="w-full flex justify-start items-center gap-2 px-8 py-4">
                     <Image alt="photo" src={photo} className="w-10 aspect-square"></Image>
                     <div className="w-[1px] h-full bg-blue-500"></div>
-                    {/* <Image onClick={() => { router.push('/stickers') }} alt="photo" src={sticker} className="w-10 aspect-square"></Image>
-                    <Image onClick={() => { router.push('/stickers') }} alt="photo" src={sticker2} className="w-10 aspect-square"></Image>
-                    <Image onClick={() => { router.push('/stickers') }} alt="photo" src={sticker3} className="w-10 aspect-square"></Image>
-                    <Image onClick={() => { router.push('/stickers') }} alt="photo" src={sticker4} className="w-10 aspect-square"></Image>
-                    <Image onClick={() => { router.push('/stickers') }} alt="photo" src={sticker5} className="w-10 aspect-square"></Image>
-                    */}
                     {
+                        nfts?.length === 0 &&
+                        <div className="w-full flex justify-start items-center gap-1">
+                            <Image onClick={() => { router.push('/stickers') }} alt="photo" src={sticker} className="w-10 aspect-square"></Image>
+                            <Image onClick={() => { router.push('/stickers') }} alt="photo" src={sticker2} className="w-10 aspect-square"></Image>
+                            <Image onClick={() => { router.push('/stickers') }} alt="photo" src={sticker3} className="w-10 aspect-square"></Image>
+                            <Image onClick={() => { router.push('/stickers') }} alt="photo" src={sticker4} className="w-10 aspect-square"></Image>
+                            <Image onClick={() => { router.push('/stickers') }} alt="photo" src={sticker5} className="w-10 aspect-square"></Image>
+                        </div>
+
+                    }
+                    {
+                        nfts && nfts?.length > 0 &&
                         nfts?.slice(0, 5).map((nft, index) => (
 
                             <img onClick={() => { router.push('/stickers') }} key={index} src={nft.metadata.image} alt='sticker' className='w-10 aspect-square rounded-lg'></img>
