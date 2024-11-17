@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import "tailwindcss/tailwind.css";
 
 import localFont from "next/font/local";
