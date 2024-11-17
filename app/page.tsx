@@ -12,6 +12,7 @@ import hug from "@/public/pinnerimages/Hug.svg";
 import wallet from "@/public/pinnerimages/wallet-svgrepo-com.svg";
 import { useEffect, useState } from "react";
 import { TonConnectButton } from "@tonconnect/ui-react";
+import diamond from "@/public/pinnerimages/toncoin-ton-logo.svg";
 type IPlace = {
   day: string;
   name: string;
@@ -114,6 +115,10 @@ export default function Home() {
             36/100 Categories
           </button>
         </div>
+        <button className="w-full flex justify-center items-center gap-2 p-2 text-pinner border border-blue-500/50 rounded-3xl">
+            <Image alt="diamond" src={diamond} className="w-8 aspect-square"></Image>
+            Get Premium
+        </button>
         <div className="w-full flex justify-start items-center gap-2 px-8 py-1 text-xs  border-t border-b border-gray-600/10">
           <span className="text-pinner font-bold">400 </span> Check-ins
         </div>
