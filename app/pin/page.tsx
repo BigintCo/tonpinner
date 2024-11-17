@@ -11,16 +11,19 @@ import points from "@/public/pinnerimages/points.png";
 import add from "@/public/pinnerimages/􀉰.svg";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useTonWallet } from "@tonconnect/ui-react";
 
 export default function Pin() {
     const router = useRouter();
+    const myWallet = useTonWallet();
     async function fetchNFTs() {
-        const response = await fetch('/api/nfts');
+        const response = await fetch('/api/nfts?wallet=' + myWallet?.account.address);
         if (!response.ok) {
             throw new Error('Failed to fetch NFT data');
         }
         return response.json();
     }
+   
     const [nfts, setNfts] = useState<any[] | null>(null);
     const [error, setError] = useState<string | null>(null);
     useEffect(() => { }, [error]);

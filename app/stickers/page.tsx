@@ -1,14 +1,16 @@
 // @typescript-eslint/no-explicit-any
 'use client';
 import Image from 'next/image'
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import leftArrow from '@/public/images/right-arrow.svg'
 import { useRouter } from 'next/navigation';
+import { useTonWallet } from '@tonconnect/ui-react';
 
 export default function Stickers() {
+    const myWallet = useTonWallet();
     const router = useRouter();
     async function fetchNFTs() {
-        const response = await fetch('/api/nfts');
+        const response = await fetch('/api/nfts?wallet=' + myWallet?.account.address);
         if (!response.ok) {
             throw new Error('Failed to fetch NFT data');
         }
