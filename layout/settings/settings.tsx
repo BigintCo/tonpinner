@@ -39,7 +39,7 @@ export default function Settings() {
     const CloseButton: React.FC<CloseButtonProps> = ({ closeToast, ariaLabel, type }) => {
         return (
             <button
-                className={`app-btn-squared h-5 absolute -top-1 -left-1 text-black !p-0 ${type === 'success' ? 'app-btn-success' : type === 'error' ? 'app-btn-danger' : type === 'warning' ? 'app-btn-warning' : type === 'info' ? 'app-btn-info' : 'app-btn-info'}`}
+                className={`app-btn-squared h-5 absolute -top-1 -left-1 text-white !p-0 ${type === 'success' ? 'app-btn-success' : type === 'error' ? 'app-btn-danger' : type === 'warning' ? 'app-btn-warning' : type === 'info' ? 'app-btn-info' : 'app-btn-info'}`}
                 onClick={closeToast}
                 aria-label={ariaLabel || "Close"}>
             </button>
