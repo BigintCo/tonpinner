@@ -121,6 +121,7 @@ export default function RootLayout({
         <TonConnectUIProvider manifestUrl="https://whale-app-pxshi.ondigitalocean.app/tonconnect-manifest.json">
           {children}
         </TonConnectUIProvider>
+        <script src="https://telegram.org/js/telegram-web-app.js"></script>
       </body>
     </html>
   );
