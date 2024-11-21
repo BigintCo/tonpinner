@@ -2,6 +2,7 @@
 import "tailwindcss/tailwind.css";
 
 import localFont from "next/font/local";
+import 'react-toastify/dist/ReactToastify.css';
 
 import "@/public/style/scroll.css";
 import "@/public/style/globals.css";
