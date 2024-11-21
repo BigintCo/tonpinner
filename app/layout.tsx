@@ -6,6 +6,7 @@ import localFont from "next/font/local";
 import "@/public/style/scroll.css";
 import "@/public/style/globals.css";
 import dynamic from "next/dynamic";
+import Settings from "@/layout/settings/settings";
 const TonConnectUIProvider = dynamic(
   () => import("@tonconnect/ui-react").then((mod) => mod.TonConnectUIProvider),
   { ssr: false } // SSR devre dışı
@@ -120,6 +121,8 @@ export default function RootLayout({
         <TonConnectUIProvider manifestUrl="https://whale-app-pxshi.ondigitalocean.app/tonconnect-manifest.json">
           {children}
         </TonConnectUIProvider>
+        <Settings />
+
       </body>
     </html>
   );
