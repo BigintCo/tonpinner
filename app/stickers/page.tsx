@@ -5,6 +5,7 @@ import React, { use, useEffect, useState } from 'react'
 import leftArrow from '@/public/images/right-arrow.svg'
 import { useRouter } from 'next/navigation';
 import { useTonWallet } from '@tonconnect/ui-react';
+import LayoutWrapper from '@/layout';
 
 export default function Stickers() {
     const myWallet = useTonWallet();
@@ -32,20 +33,23 @@ export default function Stickers() {
     }, []);
 
     return (
-        <div className='w-full h-screen bg-white'>
-            <div className='bg-pinner px-8 py-4 flex justify-start items-center gap-2 text-white'>
-                <Image onClick={() => router.push('/pin')} src={leftArrow} className='rotate-180' alt='left'></Image>
-                Osman's Stickers Book
+        <LayoutWrapper>
+            <div className='w-full h-screen bg-white'>
+                <div className='bg-pinner px-8 py-4 flex justify-start items-center gap-2 text-white'>
+                    <Image onClick={() => router.push('/pin')} src={leftArrow} className='rotate-180' alt='left'></Image>
+                    Osman's Stickers Book
+                </div>
+                <div className='w-full grid grid-cols-12 justify-start items-center gap-2 py-2 px-8'>
+                    {
+                        nfts?.map((nft, index) => (
+                            <div key={index} className='col-span-3 aspect-square'>
+                                <img src={nft.metadata.image} alt='sticker' className='w-full aspect-square'></img>
+                            </div>
+                        ))
+                    }
+                </div>
             </div>
-            <div className='w-full grid grid-cols-12 justify-start items-center gap-2 py-2 px-8'>
-                {
-                    nfts?.map((nft, index) => (
-                        <div key={index} className='col-span-3 aspect-square'>
-                            <img src={nft.metadata.image} alt='sticker' className='w-full aspect-square'></img>
-                        </div>
-                    ))
-                }
-            </div>
-        </div>
+        </LayoutWrapper>
+
     )
 }
