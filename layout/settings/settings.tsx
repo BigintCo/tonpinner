@@ -61,7 +61,7 @@ export default function Settings() {
                 stacked
                 bodyStyle={{ fontFamily: 'var(--popins), sans-serif', fontWeight: 600, position: 'relative' }}
                 // toastStyle={{borderRadius: '1.2rem' overflow: 'visible'}}
-                toastClassName={(context) => `${context?.defaultClassName} text-light bg-purple-600 overflow-visible border border-purple-500/30 rounded-xl app-shadow-xs`}
+                toastClassName={(context) => `${context?.defaultClassName} text-white bg-pinner overflow-visible border border-blue-500/30 rounded-xl app-shadow-xs`}
                 closeButton={CloseButton}
             />
 
