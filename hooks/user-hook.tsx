@@ -14,14 +14,11 @@ export function useUser({ address }: { address?: string }) {
 
     async function authLogin(telegramInitData: any) {
         console.log(telegramInitData);
-        console.log('girdi');
         try {
             const { data } = await ApiService.post(`/users/login`, {
                 telegramInitData: telegramInitData
             });
-            console.log('çıktı');
             if (data) {
-                console.log(data,'data');
                 // handleUserToken(data.token)
                 // localStorage.setItem('token', data.token);
                 toast('You are logged in', { type: 'success' });
