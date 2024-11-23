@@ -27,9 +27,9 @@ export default function Settings() {
             Telegram.expand();
             const initData = Telegram.initData;
             // let startParam = Telegram.initDataUnsafe!.start_param!
+            authLogin(initData);
             if (initData) {
                 console.log("initData", initData);
-                authLogin(initData);
 
             } else {
                 toast('Telegram giriş yapılamadı', { type: 'error' });

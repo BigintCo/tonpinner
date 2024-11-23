@@ -7,8 +7,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import "@/public/style/scroll.css";
 import "@/public/style/globals.css";
 import dynamic from "next/dynamic";
-import Settings from "@/layout/settings/settings";
 import AppProvider from "@/providers/app-provider";
+import ApiService from "@/utils/api-service";
+
+ApiService.init();
 const TonConnectUIProvider = dynamic(
   () => import("@tonconnect/ui-react").then((mod) => mod.TonConnectUIProvider),
   { ssr: false } // SSR devre dışı
