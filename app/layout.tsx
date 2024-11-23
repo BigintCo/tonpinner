@@ -8,6 +8,7 @@ import "@/public/style/scroll.css";
 import "@/public/style/globals.css";
 import dynamic from "next/dynamic";
 import Settings from "@/layout/settings/settings";
+import AppProvider from "@/providers/app-provider";
 const TonConnectUIProvider = dynamic(
   () => import("@tonconnect/ui-react").then((mod) => mod.TonConnectUIProvider),
   { ssr: false } // SSR devre dışı
@@ -120,7 +121,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.variable} antialiased flex h-full text-base`}>
         <TonConnectUIProvider manifestUrl="https://whale-app-pxshi.ondigitalocean.app/tonconnect-manifest.json">
-          {children}
+          <AppProvider>
+            {children}
+          </AppProvider>
         </TonConnectUIProvider>
         <script src="https://telegram.org/js/telegram-web-app.js"></script>
       </body>

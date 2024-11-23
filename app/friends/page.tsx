@@ -6,7 +6,7 @@ import search from "@/public/images/search.svg";
 import heart from "@/public/pinnerimages/heart.svg";
 import Link from "next/link";
 import userIcon from "@/public/pinnerimages/usericon.svg";
-import usersIcon from "@/public/pinnerimages/usersicon.svg";
+import notificationIcon from "@/public/images/notification-bell.svg";
 import location from "@/public/pinnerimages/locaition.svg";
 import rocket from "@/public/pinnerimages/rocket.svg";
 import { useRouter } from "next/navigation";
@@ -99,17 +99,17 @@ export default function Home() {
             ))
           }
         </div>
-        <div className="w-full flex justify-between items-end px-8 py-2 relative">
-          <Link href={''} className="w-8 aspect-auto">
-            <Image alt="icon" src={userIcon}></Image>
-          </Link>
-          <Link href={'/pin'} className="w-12 flex justify-center items-center aspect-auto rounded-full p-2 shadow-md absolute left-1/2 -translate-x-1/2 -top-1/2 bg-white">
-            <Image alt="icon" src={location} className="w-6"></Image>
-          </Link>
-          <Link href={''} className="w-12 aspect-auto">
-            <Image alt="icon" src={usersIcon}></Image>
-          </Link>
-        </div>
+        <div className="w-full flex justify-between items-end px-8 py-2 relative border-t border-[#24A1DE]/30">
+            <Link href={'/discover'} className="w-7 aspect-auto">
+              <Image alt="icon" src={search} className="w-full aspect-square"></Image>
+            </Link>
+            <Link href={'/pin'} className="w-10 flex justify-center items-center aspect-auto rounded-full p-2 shadow-md absolute left-1/2 -translate-x-1/2 -top-1/2 bg-white">
+              <Image alt="icon" src={location} className="w-6"></Image>
+            </Link>
+            <Link href={'/notification'} className="w-7 aspect-auto">
+              <Image alt="icon" src={notificationIcon} className="w-full"></Image>
+            </Link>
+          </div>
         {
           openMenu &&
           <div className="w-full h-[200px] absolute bottom-0 left-0 bg-white z-50 flex justify-center items-center rounded-t-xl  border-t border-blue-500">

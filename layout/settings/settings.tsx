@@ -1,7 +1,9 @@
 'use client';
+import { useUser } from "@/hooks/user-hook";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
+
 
 type TypeOptions = 'info' | 'success' | 'warning' | 'error' | 'default';
 
@@ -12,7 +14,7 @@ interface CloseButtonProps {
 
 }
 export default function Settings() {
-
+    const { authLogin } = useUser({});
     // useEffect(() => {
     //     if (!!localStorage.getItem('token')) {
     //         localStorage.setItem('token', "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVkMmZmODcyOWViZWJmMGU4YTY3MjQiLCJpYXQiOjE3MjY4MjAzNjAsImV4cCI6MTcyNzQyNTE2MH0.Do5j2pAdvDZCBOV19ELLwXxzF7-A5ic_1F3HOnlnIRI")
@@ -24,9 +26,10 @@ export default function Settings() {
             const Telegram = window.Telegram.WebApp;
             Telegram.expand();
             const initData = Telegram.initData;
-            let startParam = Telegram.initDataUnsafe!.start_param!
+            // let startParam = Telegram.initDataUnsafe!.start_param!
             if (initData) {
                 console.log("initData", initData);
+                authLogin(initData);
                 toast('Telegram giriş yapıldı', { type: 'success' });
 
             } else {

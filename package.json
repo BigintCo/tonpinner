@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",
+    "@react-google-maps/api": "^2.20.3",
     "@ton/core": "^0.59.0",
     "@tonconnect/ui-react": "^2.0.9",
+    "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.460.0",

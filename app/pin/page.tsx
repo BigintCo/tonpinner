@@ -7,6 +7,7 @@ import sticker2 from "@/public/pinnerimages/sticker-2.png";
 import sticker3 from "@/public/pinnerimages/sticker-3.png";
 import sticker4 from "@/public/pinnerimages/sticker-4.png";
 import sticker5 from "@/public/pinnerimages/sticker-5.png";
+import leftArrow from "@/public/images/right-arrow.svg";
 import points from "@/public/pinnerimages/points.png";
 import add from "@/public/pinnerimages/􀉰.svg";
 import { useRouter } from "next/navigation";
@@ -45,7 +46,7 @@ export default function Pin() {
         <LayoutWrapper>
             <div className="w-full h-screen overflow-hidden flex flex-col items-start justify-between bg-white">
                 <div className="w-full flex flex-col items-start">
-                    <div className="bg-[#24A1DE] w-full px-8 py-4">
+                    <div className="bg-[#24A1DE] w-full flex justify-between items-center px-8 py-4">
                         <div className="w-full flex justify-start items-center gap-4">
                             <div className="w-16 aspect-square rounded-full border-2 border-white">
                                 <Image alt="pp" src={human} className="w-full aspect-square rounded-full" />
@@ -54,6 +55,14 @@ export default function Pin() {
                                 <div className="text-xl">Starbucks</div>
                                 <div className="text-sm">Change Location </div>
                             </div>
+                        </div>
+                        <div
+                            className=""
+                            onClick={() => {
+                                router.push("/");
+                            }}
+                        >
+                            <Image alt="left" src={leftArrow} className="rotate-180"></Image>
                         </div>
                     </div>
                     <div className="w-full flex justify-start items-center gap-2 px-8 py-4">

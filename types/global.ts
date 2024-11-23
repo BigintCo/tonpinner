@@ -1,0 +1,1 @@
+export type ILayoutType = 'default' | 'account' | 'none';
