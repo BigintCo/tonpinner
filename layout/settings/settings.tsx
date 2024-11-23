@@ -21,21 +21,7 @@ export default function Settings() {
     //     }
     // }, []);
 
-    useEffect(() => {
-        if (typeof window !== 'undefined' && window.Telegram) {
-            const Telegram = window.Telegram.WebApp;
-            Telegram.expand();
-            const initData = Telegram.initData;
-            // let startParam = Telegram.initDataUnsafe!.start_param!
-            authLogin(initData);
-            if (initData) {
-                console.log("initData", initData);
 
-            } else {
-                toast('Telegram giriş yapılamadı', { type: 'error' });
-            }
-        }
-    }, []);
 
 
     const CloseButton: React.FC<CloseButtonProps> = ({ closeToast, ariaLabel, type }) => {

@@ -24,6 +24,9 @@ import { MapProvider } from "@/providers/MapProvider";
 import { MapComponent } from "@/components/map";
 import { log } from "console";
 import { Button } from "@/components/ui/button";
+import { useUser } from "@/hooks/user-hook";
+import { toast } from "react-toastify";
+import { useAppContext } from "@/providers/app-provider";
 type IPlace = {
   day: string;
   name: string;
@@ -34,6 +37,8 @@ type IPlace = {
   humans: { image: StaticImageData }[];
 };
 export default function Home() {
+  const { authLogin } = useUser({});
+  const { userToken, handleUserToken } = useAppContext();
   const [loginStatus, setLoginStatus] = useState(false);
   const router = useRouter();
   const places: IPlace[] = [
@@ -101,6 +106,35 @@ export default function Home() {
     };
     tonConnectUI.sendTransaction(transaction);
   };
+  const loginPinner = () => {
+    if (typeof window !== 'undefined' && window.Telegram) {
+      const Telegram = window.Telegram.WebApp;
+      Telegram.expand();
+      const initData = Telegram.initData;
+      // let startParam = Telegram.initDataUnsafe!.start_param!
+      if (initData) {
+        authLogin(initData);
+      } else {
+        toast('You could not log in', { type: 'error' });
+      }
+      const token = localStorage.getItem('token');
+      if (token) {
+        setLoginStatus(true);
+      }
+    }
+  }
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      handleUserToken(token);
+      setLoginStatus(true);
+    }
+  }, []);
+  useEffect(() => {
+    if (userToken) {
+      setLoginStatus(true);
+    }
+  }, [userToken]);
   return (
     <LayoutWrapper>
       {
@@ -110,7 +144,7 @@ export default function Home() {
             <Image src={logo} alt="logo" className="w-full"></Image>
           </div>
           <div className="w-full">
-            <Button onClick={() => { setLoginStatus(true) }} className="text-pinner rounded-lg py-2 border border-[#24A1DE]/30 w-full bg-white flex justify-center items-center gap-2">
+            <Button onClick={() => { loginPinner() }} className="text-pinner rounded-lg py-2 border border-[#24A1DE]/30 w-full bg-white flex justify-center items-center gap-2">
               <Image alt="logo" src={pathIcon} className="h-full aspect-square"></Image>
               <span>
                 Continue to TonPinner
