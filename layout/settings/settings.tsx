@@ -14,15 +14,18 @@ interface CloseButtonProps {
 
 }
 export default function Settings() {
-    const { authLogin } = useUser({});
+    const { authLogin, getUser } = useUser({});
     // useEffect(() => {
     //     if (!!localStorage.getItem('token')) {
     //         localStorage.setItem('token', "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVkMmZmODcyOWViZWJmMGU4YTY3MjQiLCJpYXQiOjE3MjY4MjAzNjAsImV4cCI6MTcyNzQyNTE2MH0.Do5j2pAdvDZCBOV19ELLwXxzF7-A5ic_1F3HOnlnIRI")
     //     }
     // }, []);
-
-
-
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            getUser();
+        }
+    }, []);
 
     const CloseButton: React.FC<CloseButtonProps> = ({ closeToast, ariaLabel, type }) => {
         return (

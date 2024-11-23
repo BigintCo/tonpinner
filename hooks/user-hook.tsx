@@ -31,9 +31,10 @@ export function useUser({ address }: { address?: string }) {
         setLoading(true);
         try {
             if (localStorage.getItem('token')) {
-                const { data } = await ApiService.get(`/users/profile`);
+                const { data } = await ApiService.get(`/users/current`);
                 if (data) {
-                    handleUser(data)
+                    console.log(data, 'user');
+                    handleUser(data);
                 }
                 else {
                     localStorage.removeItem('token');

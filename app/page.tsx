@@ -38,7 +38,7 @@ type IPlace = {
 };
 export default function Home() {
   const { authLogin } = useUser({});
-  const { userToken, handleUserToken } = useAppContext();
+  const { userToken, handleUserToken, user } = useAppContext();
   const [loginStatus, setLoginStatus] = useState(false);
   const router = useRouter();
   const places: IPlace[] = [
@@ -194,9 +194,16 @@ export default function Home() {
 
           <div className="bg-[#24A1DE] w-full px-8 py-4 relative">
             <div className="w-full flex justify-between items-center gap-4">
-              <div className="w-14 aspect-square rounded-full border-2 border-white">
-                <Image alt="pp" src={human} className="w-14 aspect-square rounded-full" />
-              </div>
+              {
+                user?.photoUrl ?
+                  <div className="w-14 aspect-square rounded-full border-2 border-white">
+                    <Image alt="pp" src={user?.photoUrl} width={56} height={56} className="w-full aspect-square rounded-full" />
+                  </div>
+                  :
+                  <div className="w-14 aspect-square rounded-full border-2 border-white">
+                    <Image alt="pp" src={human} className="w-14 aspect-square rounded-full" />
+                  </div>
+              }
               <div className="w-full flex justify-center items-center gap-2 bg-black/10 py-1 px-4 rounded-lg text-white text-sm">
                 <Image alt="search" src={search} className="w-4 aspect-square"></Image>
                 <span>Search</span>

@@ -6,21 +6,9 @@ export type ISocialLink = {
 
 export type IUser = {
   _id: string,
-  username: string,
-  password: string,
-  level: number,
-  points: number,
-  energy: number,
-  maxEnergy: number,
-  hourlyIncome: number,
-  calculatedIncome: number,
-  businesses: [],
-  referrals: [],
-  dailyRewardStep: number,
-  lastEnergyRefill: string,
-  hasClaimedDailyLoginBonus: boolean,
-  hasClaimedDailyReward: boolean,
-  pointsPerClick: number,
+  firstName: string,
+  lastName: string,
+  photoUrl: string,
 }
 
 export type IFriends = {
