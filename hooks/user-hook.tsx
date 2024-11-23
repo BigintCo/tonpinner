@@ -19,10 +19,10 @@ export function useUser({ address }: { address?: string }) {
                 telegramInitData: telegramInitData
             });
             if (data) {
-                console.log(data);
+                console.log(data,'data');
                 // handleUserToken(data.token)
                 // localStorage.setItem('token', data.token);
-                toast('You are logged in', { type: 'success' })
+                toast('You are logged in', { type: 'success' });
             }
         } catch (e: any) {
             toast(e?.response?.data?.error, { type: 'error' })

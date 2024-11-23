@@ -30,7 +30,6 @@ export default function Settings() {
             if (initData) {
                 console.log("initData", initData);
                 authLogin(initData);
-                toast('Telegram giriş yapıldı', { type: 'success' });
 
             } else {
                 toast('Telegram giriş yapılamadı', { type: 'error' });
