@@ -16,7 +16,7 @@ export function useUser({ address }: { address?: string }) {
         console.log(telegramInitData);
         try {
             const { data } = await ApiService.post(`/users/login`, {
-                initdata: telegramInitData
+                initData: telegramInitData
             });
             if (data) {
                 // handleUserToken(data.token)
