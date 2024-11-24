@@ -15,10 +15,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { TonConnectButton } from "@tonconnect/ui-react";
 import LayoutWrapper from "@/layout";
+import { useAppContext } from "@/providers/app-provider";
 
 
 export default function Home() {
-  const router = useRouter();
+  const { user } = useAppContext();
   const [openMenu, setOpenMenu] = useState(false);
   const [section, setSection] = useState<number>(0);
 
@@ -27,9 +28,16 @@ export default function Home() {
       <div className="w-full h-screen overflow-hidden flex flex-col items-start relative bg-white">
         <div className="bg-[#24A1DE] w-full px-8 py-4 ">
           <div className="w-full flex justify-between items-center gap-4">
-            <div className="w-14 aspect-square rounded-full border-2 border-white">
-              <Image alt="pp" src={human} className="w-14 aspect-square rounded-full" />
-            </div>
+            {
+              user?.photoUrl ?
+                <div className="w-14 aspect-square rounded-full border-2 border-white">
+                  <Image alt="pp" src={user?.photoUrl} width={56} height={56} className="w-full aspect-square rounded-full" />
+                </div>
+                :
+                <div className="w-14 aspect-square rounded-full border-2 border-white">
+                  <Image alt="pp" src={human} className="w-14 aspect-square rounded-full" />
+                </div>
+            }
             <div className="w-full flex justify-center items-center gap-2 bg-black/10 py-1 px-4 rounded-lg text-white text-sm">
               <Image alt="search" src={search} className="w-4 aspect-square"></Image>
               <span>Search</span>
@@ -42,12 +50,12 @@ export default function Home() {
         <div className="w-full h-[90vh] overflow-scroll scroll-hidden  relative flex flex-col justify-start items-start gap-2">
           <div className="w-full grid grid-cols-12 justify-center items-center text-sm sticky top-0">
             <div className="col-span-6">
-              <button onClick={()=> {setSection(0)}} className={`${section === 0 ? 'border-[#24A1DE]' : ''} py-2 border-b   w-full flex justify-center items-center bg-white text-pinner`}>
+              <button onClick={() => { setSection(0) }} className={`${section === 0 ? 'border-[#24A1DE]' : ''} py-2 border-b   w-full flex justify-center items-center bg-white text-pinner`}>
                 Discover
               </button>
             </div>
             <div className="col-span-6">
-              <button onClick={()=> {setSection(1)}} className={`${section === 1 ? 'border-[#24A1DE]' : ''} py-2 border-b  w-full flex justify-center items-center bg-white text-pinner`}>
+              <button onClick={() => { setSection(1) }} className={`${section === 1 ? 'border-[#24A1DE]' : ''} py-2 border-b  w-full flex justify-center items-center bg-white text-pinner`}>
                 Following
               </button>
             </div>
