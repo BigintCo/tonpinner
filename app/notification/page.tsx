@@ -24,43 +24,7 @@ type IPlace = {
 export default function Home() {
   const { user } = useAppContext();
   const router = useRouter();
-  const users: IPlace[] = [
-    {
-      userName: "Mert Metin",
-      name: "Starbucks",
-      day: "24 February 2024",
-      place: "Bebek / İstanbul",
-      date: "24 Feb",
-    },
-    {
-      userName: "Mert Metin",
-      name: "Starbucks",
-      day: "24 February 2024",
-      place: "Bebek / İstanbul",
-      date: "24 Feb",
-    },
-    {
-      userName: "Mert Metin",
-      name: "Starbucks",
-      day: "24 February 2024",
-      place: "Bebek / İstanbul",
-      date: "24 Feb",
-    },
-    {
-      userName: "Mert Metin",
-      name: "Starbucks",
-      day: "24 February 2024",
-      place: "Bebek / İstanbul",
-      date: "24 Feb",
-    },
-    {
-      userName: "Mert Metin",
-      name: "Starbucks",
-      day: "24 February 2024",
-      place: "Bebek / İstanbul",
-      date: "24 Feb",
-    },
-  ];
+ 
   const [openMenu, setOpenMenu] = useState(false);
 
   return (
@@ -88,25 +52,9 @@ export default function Home() {
           </div>
         </div>
         <div className="w-full h-[90vh] overflow-scroll scroll-hidden">
-          {
-            users.map((user, index) => (
-              <div key={index} className="w-full flex justify-start items-center gap-4 px-8 py-4 border-b border-gray-300/30">
-                <div className="w-20 aspect-square rounded-full border-2 border-white">
-                  <Image alt="pp" src={human} className="w-20 aspect-square rounded-full" />
-                </div>
-                <div className="flex flex-col justify-start items-start gap-1">
-                  <div className="text-sm">{user.userName}</div>
-                  <div className="text-lg">{user.name}</div>
-                  <div className="text-sm text-gray-500">{user.place}</div>
-                  <div className="text-sm text-gray-500">{user.date}</div>
-                </div>
-                <div className="w-full flex justify-end items-center gap-4">
-                  <Image onClick={() => { router.push('/premium') }} src={rocket} alt="rocket"></Image>
-                  <Image src={heart} alt="rocket"></Image>
-                </div>
-              </div>
-            ))
-          }
+         <div className="w-full flex justify-center items-center text-pinner h-full">
+          You have no notifications!
+         </div>
         </div>
         <div className="w-full flex justify-between items-end px-8 py-2 relative border-t border-[#24A1DE]/30">
             <Link href={'/discover'} className="w-7 aspect-auto">
