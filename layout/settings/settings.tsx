@@ -21,6 +21,14 @@ export default function Settings() {
     //     }
     // }, []);
     useEffect(() => {
+        if (typeof window !== 'undefined' && window.Telegram) {
+            const Telegram = window.Telegram.WebApp;
+            if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+                Telegram.WebApp.expand();
+            }
+        }
+    }, []);
+    useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
             getUser();
