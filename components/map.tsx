@@ -20,7 +20,7 @@ const defaultMapCenter = {
 };
 
 //Default zoom level, can be adjusted
-const defaultMapZoom = 20
+const defaultMapZoom = 15
 
 //Map options
 const defaultMapOptions = {
@@ -64,7 +64,7 @@ const MapComponent = () => {
         <div className="w-full h-40">
             <GoogleMap
                 mapContainerStyle={defaultMapContainerStyle}
-                center={defaultMapCenter}
+                center={currentPosition ? currentPosition : defaultMapCenter}
                 zoom={defaultMapZoom}
                 options={defaultMapOptions}
             >
