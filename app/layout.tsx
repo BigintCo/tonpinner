@@ -121,6 +121,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Meta etiketleri burada tanımlanır */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+      </head>
       <body className={`${poppins.variable} antialiased flex h-full text-base`}>
         <TonConnectUIProvider manifestUrl="https://whale-app-pxshi.ondigitalocean.app/tonconnect-manifest.json">
           <AppProvider>
