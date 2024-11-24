@@ -3,7 +3,7 @@ we need to make this component client rendered as well*/
 'use client'
 
 //Map component Component from library
-import { GoogleMap } from "@react-google-maps/api";
+import { GoogleMap, Marker } from "@react-google-maps/api";
 
 //Map's styling
 const defaultMapContainerStyle = {
@@ -26,6 +26,11 @@ const defaultMapOptions = {
     zoomControl: false,
     mapTypeId: 'roadmap',
 };
+const markers = [
+    { id: 1, position: { lat: 41.0082, lng: 28.9784 } }, // İstanbul
+    { id: 2, position: { lat: 41.015137, lng: 28.979530 } }, // Sultanahmet
+    { id: 3, position: { lat: 40.990073, lng: 29.024776 } } // Kadıköy
+];
 
 const MapComponent = () => {
     return (
@@ -36,6 +41,12 @@ const MapComponent = () => {
                 zoom={defaultMapZoom}
                 options={defaultMapOptions}
             >
+                {markers.map((marker) => (
+                    <Marker 
+                        key={marker.id} 
+                        position={marker.position} 
+                    />
+                ))}
             </GoogleMap>
         </div>
     )
