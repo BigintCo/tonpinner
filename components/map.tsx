@@ -61,7 +61,7 @@ const MapComponent = () => {
         }
     }, []);
     return (
-        <div className="w-full h-40">
+        <div className="w-full">
             <GoogleMap
                 mapContainerStyle={defaultMapContainerStyle}
                 center={currentPosition ? currentPosition : defaultMapCenter}

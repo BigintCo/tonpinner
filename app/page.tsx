@@ -214,7 +214,7 @@ export default function Home() {
             </div>
           </div>
           <div className="w-full  px-8 py-4 rounded-lg flex flex-col justify-start items-start gap-3">
-            <div className="w-full h-40">
+            <div className="w-full">
               <MapProvider>
                 <MapComponent />
               </MapProvider>
