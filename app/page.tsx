@@ -4,9 +4,9 @@ import human from "@/public/pinnerimages/human.png";
 import search from "@/public/images/search.svg";
 import coffee from "@/public/pinnerimages/coffee.svg";
 import Link from "next/link";
-import notificationIcon from "@/public/images/notification-bell.svg";
-import usersIcon from "@/public/pinnerimages/usersicon.svg";
-import location from "@/public/pinnerimages/locaition.svg";
+import notificationIcon from "@/public/pinnerimages/bell.svg";
+import discover from "@/public/pinnerimages/discover.svg";
+import location from "@/public/pinnerimages/geo-alt.svg"
 import hug from "@/public/pinnerimages/Hug.svg";
 import diamond from "@/public/pinnerimages/toncoin-ton-logo.svg";
 import wallet from "@/public/pinnerimages/wallet-svgrepo-com.svg";
@@ -269,15 +269,19 @@ export default function Home() {
               ))
             }
           </div>
-          <div className="w-full flex justify-between items-end px-8 py-2 relative border-t border-[#24A1DE]/30">
-            <Link href={'/discover'} className="w-7 aspect-auto">
-              <Image alt="icon" src={search} className="w-full aspect-square"></Image>
+          <div className="w-full flex justify-between gap-10 items-end px-16 py-3 relative border-t border-[#24A1DE]/30">
+            <Link href={'/discover'} className="w-7 aspect-auto flex flex-col justify-center items-center gap-1">
+              <Image alt="icon" src={discover} className="w-full aspect-square"></Image>
+              <span className="text-xs text-gray-700">Discover</span>
             </Link>
-            <Link href={'/pin'} className="w-10 flex justify-center items-center aspect-auto rounded-full p-2 shadow-md absolute left-1/2 -translate-x-1/2 -top-1/2 bg-white">
-              <Image alt="icon" src={location} className="w-6"></Image>
+            <Link href={'/pin'} className="flex justify-center items-center aspect-auto rounded-full p-2 absolute left-1/2 -translate-x-1/2 -top-1/2 translate-y-3  bg-white">
+              <div className="w-full aspect-square bg-pinner flex justify-center items-center rounded-full p-4">
+                <Image alt="icon" src={location} className="w-6"></Image>
+              </div>
             </Link>
-            <Link href={'/notification'} className="w-7 aspect-auto">
-              <Image alt="icon" src={notificationIcon} className="w-full"></Image>
+            <Link href={'/notification'} className="w-7 aspect-auto flex flex-col justify-center items-center gap-1">
+              <Image alt="icon" src={notificationIcon} className="w-full aspect-square"></Image>
+              <span className="text-xs text-gray-700">Notification</span>
             </Link>
           </div>
           {

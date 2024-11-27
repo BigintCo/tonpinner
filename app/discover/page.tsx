@@ -8,9 +8,9 @@ import mekan1 from "@/public/pinnerimages/mekan1.jpeg";
 import mekan2 from "@/public/pinnerimages/mekan2.webp";
 import mekan3 from "@/public/pinnerimages/mekan3.webp";
 import mekan4 from "@/public/pinnerimages/mekan4.webp";
-import notificationIcon from "@/public/images/notification-bell.svg";
-import location from "@/public/pinnerimages/locaition.svg";
-import rocket from "@/public/pinnerimages/rocket.svg";
+import notificationIcon from "@/public/pinnerimages/bell.svg";
+import location from "@/public/pinnerimages/geo-alt.svg";
+import discover from "@/public/pinnerimages/discover.svg";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { TonConnectButton } from "@tonconnect/ui-react";
@@ -111,17 +111,21 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="w-full flex justify-between items-end px-8 py-2 relative border-t border-[#24A1DE]/30">
-          <Link href={'/discover'} className="w-7 aspect-auto">
-            <Image alt="icon" src={search} className="w-full aspect-square"></Image>
-          </Link>
-          <Link href={'/pin'} className="w-10 flex justify-center items-center aspect-auto rounded-full p-2 shadow-md absolute left-1/2 -translate-x-1/2 -top-1/2 bg-white">
-            <Image alt="icon" src={location} className="w-6"></Image>
-          </Link>
-          <Link href={'/notification'} className="w-7 aspect-auto">
-            <Image alt="icon" src={notificationIcon} className="w-full"></Image>
-          </Link>
-        </div>
+        <div className="w-full flex justify-between gap-10 items-end px-16 py-3 relative border-t border-[#24A1DE]/30">
+            <Link href={'/discover'} className="w-7 aspect-auto flex flex-col justify-center items-center gap-1">
+              <Image alt="icon" src={discover} className="w-full aspect-square"></Image>
+              <span className="text-xs text-gray-700">Discover</span>
+            </Link>
+            <Link href={'/pin'} className="flex justify-center items-center aspect-auto rounded-full p-2 absolute left-1/2 -translate-x-1/2 -top-1/2 translate-y-3  bg-white">
+              <div className="w-full aspect-square bg-pinner flex justify-center items-center rounded-full p-4">
+                <Image alt="icon" src={location} className="w-6"></Image>
+              </div>
+            </Link>
+            <Link href={'/notification'} className="w-7 aspect-auto flex flex-col justify-center items-center gap-1">
+              <Image alt="icon" src={notificationIcon} className="w-full aspect-square"></Image>
+              <span className="text-xs text-gray-700">Notification</span>
+            </Link>
+          </div>
         {
           openMenu &&
           <div className="w-full h-[200px] absolute bottom-0 left-0 bg-white z-50 flex justify-center items-center rounded-t-xl  border-t border-blue-500">
