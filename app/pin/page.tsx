@@ -184,12 +184,13 @@ export default function Pin() {
                                     <Image alt="photo" src={place.icon} width={35} height={35} className=""></Image>
                                     <div className="w-full flex flex-col justify-start items-start ">
                                         <p className="text-2xs">{place.name}</p>
-                                        <p className="text-2xs">{
+                                        <p className="text-2xs text-gray-500">{
                                             currentPosition
                                                 ? ((calculateDistance(currentPosition, place.geometry.location) / 1000).toFixed(2)) + " km"
                                                 : null
                                         }</p>
                                     </div>
+                                 
                                 </div>
                             ))
                         }
