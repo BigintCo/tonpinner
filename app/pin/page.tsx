@@ -22,6 +22,7 @@ export default function Pin() {
     const router = useRouter();
     const myWallet = useTonWallet();
     const [loading, setLoading] = useState<boolean>(false);
+    const [pinnedPlace, setPinnedPlace] = useState<string>('Choose a place');
     const [placesWindow, setPlacesWindow] = useState<boolean>(false);
     const [places, setPlaces] = useState<IPlaces[] | null>(null);
     async function fetchNFTs() {
@@ -132,7 +133,6 @@ export default function Pin() {
     useEffect(() => {
         if (currentPosition) {
             getNearMePlaces();
-
         }
     }, [currentPosition]);
 
@@ -178,9 +178,10 @@ export default function Pin() {
                     </div>
                     <div className="w-full flex flex-col justify-start items-start gap-4 p-2">
                         {
-                            places?.map((place) => (
-                                <div key={place.place_id} className="w-full flex justify-start items-center gap-2">
-
+                            places?.map((place, index) => (
+                                <div
+                                    onClick={() => { localStorage.setItem("pinnedPlace", JSON.stringify(place)); setPinnedPlace(place.name);setPlacesWindow(false) }}
+                                    key={index} className="w-full flex justify-start items-center gap-2">
                                     <Image alt="photo" src={place.icon} width={35} height={35} className=""></Image>
                                     <div className="w-full flex flex-col justify-start items-start ">
                                         <p className="text-2xs">{place.name}</p>
@@ -190,7 +191,6 @@ export default function Pin() {
                                                 : null
                                         }</p>
                                     </div>
-                                 
                                 </div>
                             ))
                         }
@@ -203,7 +203,7 @@ export default function Pin() {
                                 <Image alt="pp" src={human} className="w-full aspect-square rounded-full" />
                             </div>
                             <div className="flex flex-col justify-start items-start gap-1 text-white">
-                                <div className="text-xl">Starbucks</div>
+                                <div className="text-xl">{pinnedPlace}</div>
                                 <button onClick={() => { setPlacesWindow(true) }} className="text-sm">Change Location </button>
                             </div>
                         </div>
