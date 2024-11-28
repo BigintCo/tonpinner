@@ -64,6 +64,7 @@ export default function Pin() {
     const [places, setPlaces] = useState<IPlaces[] | null>(null);
     const [nfts, setNfts] = useState<any[] | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [cameraOn, setCameraOn] = useState<boolean>(false);
     const [currentPosition, setCurrentPosition] = useState<{
         lat: number;
         lng: number;
@@ -72,7 +73,7 @@ export default function Pin() {
 
     const capturePhoto = async () => {
         try {
-            // Kamera akışını başlat
+            setCameraOn(true);
             const stream = await navigator.mediaDevices.getUserMedia({
                 video: true,
                 audio: false,
@@ -94,6 +95,7 @@ export default function Pin() {
 
                         // Kamera akışını durdur
                         stream.getTracks().forEach((track) => track.stop());
+                        setCameraOn(false);
                     }
                 }
             };
@@ -213,8 +215,9 @@ export default function Pin() {
 
     return (
         <LayoutWrapper>
-            <div key={path} className="w-full h-screen overflow-hidden flex flex-col items-start justify-between bg-white">
-                <div className={`${placesWindow ? 'top-0' : 'top-[1000px] '} transition-all duration-300 w-full h-screen absolute z-50 bg-white flex flex-col justify-start items-start`}>
+            <div key={path} className="w-full h-screen overflow-hidden flex flex-col items-start justify-between bg-white relative">
+                <canvas ref={canvasRef} className={`${cameraOn ? 'block' : 'hidden'} absolute top-0 w-full h-screen z-50`} />
+                <div className={`${placesWindow ? 'top-0' : 'top-[1000px] '} transition-all duration-300 w-full h-screen absolute z-40 bg-white flex flex-col justify-start items-start`}>
                     <div className="bg-[#24A1DE] w-full flex justify-between items-center px-8 py-4">
                         <div className="w-full flex justify-start items-center gap-4">
                             <div className="flex flex-col justify-start items-start gap-1 text-white">
