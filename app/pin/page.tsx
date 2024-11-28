@@ -257,7 +257,7 @@ export default function Pin() {
                                 <Image alt="pp" src={human} className="w-full aspect-square rounded-full" />
                             </div>
                             <div className="flex flex-col justify-start items-start gap-1 text-white">
-                                <div className="text-xs0ii,">{pinnedPlace}</div>
+                                <div className="text-xs,">{pinnedPlace}</div>
                                 <button onClick={() => { setPlacesWindow(true) }} className="text-sm">Change Location</button>
                             </div>
                         </div>
