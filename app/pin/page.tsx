@@ -10,7 +10,7 @@ import sticker5 from "@/public/pinnerimages/sticker-5.png";
 import leftArrow from "@/public/images/right-arrow.svg";
 import points from "@/public/pinnerimages/points.png";
 import add from "@/public/pinnerimages/􀉰.svg";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTonWallet } from "@tonconnect/ui-react";
 import LayoutWrapper from "@/layout";
@@ -18,41 +18,6 @@ import ApiService from "@/utils/api-service";
 import { toast } from "react-toastify";
 
 export default function Pin() {
-
-    const router = useRouter();
-    const myWallet = useTonWallet();
-    const [loading, setLoading] = useState<boolean>(false);
-    const [pinnedPlace, setPinnedPlace] = useState<string>('Choose a place');
-    const [placesWindow, setPlacesWindow] = useState<boolean>(false);
-    const [places, setPlaces] = useState<IPlaces[] | null>(null);
-    async function fetchNFTs() {
-        const response = await fetch('/api/nfts?wallet=' + myWallet?.account.address);
-        if (!response.ok) {
-            throw new Error('Failed to fetch NFT data');
-        }
-        return response.json();
-    }
-    const [currentPosition, setCurrentPosition] = useState<{
-        lat: number;
-        lng: number;
-    } | null>(null);
-
-    useEffect(() => {
-        if (navigator.geolocation) {
-            const watchId = navigator.geolocation.watchPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    setCurrentPosition({ lat: latitude, lng: longitude });
-                },
-                (error) => {
-                    console.error("Konum alınırken hata oluştu:", error);
-                },
-                { enableHighAccuracy: true }
-            );
-        } else {
-            console.error("Geolocation API desteklenmiyor.");
-        }
-    }, []);
     type IPlaces = {
         geometry: {
             location: {
@@ -86,8 +51,30 @@ export default function Pin() {
         user_ratings_total: number;
         vicinity: string;
     };
+    const router = useRouter();
+    const path = usePathname();
+    const myWallet = useTonWallet();
+    const [loading, setLoading] = useState<boolean>(false);
+    const [pinnedPlace, setPinnedPlace] = useState<string>('Choose a place');
+    const [placesWindow, setPlacesWindow] = useState<boolean>(false);
+    const [places, setPlaces] = useState<IPlaces[] | null>(null);
+    const [nfts, setNfts] = useState<any[] | null>(null);
+    const [error, setError] = useState<string | null>(null);
+    const [currentPosition, setCurrentPosition] = useState<{
+        lat: number;
+        lng: number;
+    } | null>(null);
+    useEffect(() => { getNavigation() }, []);
+    async function fetchNFTs() {
+        const response = await fetch('/api/nfts?wallet=' + myWallet?.account.address);
+        if (!response.ok) {
+            throw new Error('Failed to fetch NFT data');
+        }
+        return response.json();
+    }
     async function getNearMePlaces() {
         setLoading(true);
+        console.log('currentPosition');
         try {
             if (localStorage.getItem('token')) {
                 if (!currentPosition) {
@@ -114,9 +101,7 @@ export default function Pin() {
         }
         setLoading(false);
     }
-    const [nfts, setNfts] = useState<any[] | null>(null);
-    const [error, setError] = useState<string | null>(null);
-    useEffect(() => { }, [error]);
+
     useEffect(() => {
         async function loadNFTs() {
             try {
@@ -130,10 +115,29 @@ export default function Pin() {
             loadNFTs();
         }
     }, [myWallet]);
+    const getNavigation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setCurrentPosition({ lat: latitude, lng: longitude });
+                    console.log('navigator.geolocation');
+                },
+                (error) => {
+                    console.error("Konum alınırken hata oluştu:", error);
+                },
+                { enableHighAccuracy: true }
+            );
+        } else {
+            console.error("Geolocation API desteklenmiyor.");
+        }
+    }
     useEffect(() => {
         if (currentPosition) {
+            console.log('currentPosition');
             getNearMePlaces();
         }
+
     }, [currentPosition]);
 
     type Coordinates = {
@@ -159,7 +163,7 @@ export default function Pin() {
 
     return (
         <LayoutWrapper>
-            <div className="w-full h-screen overflow-hidden flex flex-col items-start justify-between bg-white">
+            <div key={path} className="w-full h-screen overflow-hidden flex flex-col items-start justify-between bg-white">
                 <div className={`${placesWindow ? 'top-0' : 'top-[1000px] '} transition-all duration-300 w-full h-screen absolute z-50 bg-white flex flex-col justify-start items-start`}>
                     <div className="bg-[#24A1DE] w-full flex justify-between items-center px-8 py-4">
                         <div className="w-full flex justify-start items-center gap-4">
@@ -170,7 +174,7 @@ export default function Pin() {
                         <div
                             className=""
                             onClick={() => {
-                                setPlacesWindow(false)
+                                setPlacesWindow(false);
                             }}
                         >
                             <Image alt="left" src={leftArrow} className="rotate-180"></Image>
@@ -180,7 +184,7 @@ export default function Pin() {
                         {
                             places?.map((place, index) => (
                                 <div
-                                    onClick={() => { localStorage.setItem("pinnedPlace", JSON.stringify(place)); setPinnedPlace(place.name);setPlacesWindow(false) }}
+                                    onClick={() => { localStorage.setItem("pinnedPlace", JSON.stringify(place)); setPinnedPlace(place.name); setPlacesWindow(false) }}
                                     key={index} className="w-full flex justify-start items-center gap-2">
                                     <Image alt="photo" src={place.icon} width={35} height={35} className=""></Image>
                                     <div className="w-full flex flex-col justify-start items-start ">
@@ -204,13 +208,15 @@ export default function Pin() {
                             </div>
                             <div className="flex flex-col justify-start items-start gap-1 text-white">
                                 <div className="text-xl">{pinnedPlace}</div>
-                                <button onClick={() => { setPlacesWindow(true) }} className="text-sm">Change Location </button>
+                                <button onClick={() => { setPlacesWindow(true) }} className="text-sm">Change Location</button>
                             </div>
                         </div>
                         <div
                             className=""
                             onClick={() => {
                                 router.push("/");
+                                localStorage.removeItem("pinnedPlace");
+                                setPinnedPlace('Choose a place');
                             }}
                         >
                             <Image alt="left" src={leftArrow} className="rotate-180"></Image>
