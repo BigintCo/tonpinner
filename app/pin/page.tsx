@@ -14,10 +14,16 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTonWallet } from "@tonconnect/ui-react";
 import LayoutWrapper from "@/layout";
+import ApiService from "@/utils/api-service";
+import { toast } from "react-toastify";
 
 export default function Pin() {
+
     const router = useRouter();
     const myWallet = useTonWallet();
+    const [loading, setLoading] = useState<boolean>(false);
+    const [placesWindow, setPlacesWindow] = useState<boolean>(false);
+    const [places, setPlaces] = useState<IPlaces[] | null>(null);
     async function fetchNFTs() {
         const response = await fetch('/api/nfts?wallet=' + myWallet?.account.address);
         if (!response.ok) {
@@ -25,7 +31,88 @@ export default function Pin() {
         }
         return response.json();
     }
+    const [currentPosition, setCurrentPosition] = useState<{
+        lat: number;
+        lng: number;
+    } | null>(null);
 
+    useEffect(() => {
+        if (navigator.geolocation) {
+            const watchId = navigator.geolocation.watchPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setCurrentPosition({ lat: latitude, lng: longitude });
+                },
+                (error) => {
+                    console.error("Konum alınırken hata oluştu:", error);
+                },
+                { enableHighAccuracy: true }
+            );
+        } else {
+            console.error("Geolocation API desteklenmiyor.");
+        }
+    }, []);
+    type IPlaces = {
+        geometry: {
+            location: {
+                lat: number;
+                lng: number;
+            };
+            viewport: {
+                northeast: {
+                    lat: number;
+                    lng: number;
+                };
+                southwest: {
+                    lat: number;
+                    lng: number;
+                };
+            };
+        };
+        icon: string;
+        icon_background_color: string;
+        icon_mask_base_uri: string;
+        name: string;
+        opening_hours: {
+            open_now: boolean;
+        };
+        place_id: string;
+        price_level: number
+        rating: number;
+        reference: string;
+        scope: string;
+        types: string[];
+        user_ratings_total: number;
+        vicinity: string;
+    };
+    async function getNearMePlaces() {
+        setLoading(true);
+        try {
+            if (localStorage.getItem('token')) {
+                if (!currentPosition) {
+                    toast('Location not found', { type: 'error' })
+                    return;
+                }
+                if (currentPosition) {
+                    const { data } = await ApiService.query(`/maps/nearMePlaces`,
+                        {
+                            latitude: currentPosition.lat,
+                            longitude: currentPosition.lng
+                        });
+                    if (data) {
+                        setPlaces(data);
+                    }
+                    else {
+                        toast('Location not found', { type: 'error' })
+                    }
+                }
+            }
+        } catch (e: any) {
+            localStorage.removeItem('token');
+            toast(e?.response?.data?.error, { type: 'error' })
+        }
+        setLoading(false);
+    }
     const [nfts, setNfts] = useState<any[] | null>(null);
     const [error, setError] = useState<string | null>(null);
     useEffect(() => { }, [error]);
@@ -42,9 +129,72 @@ export default function Pin() {
             loadNFTs();
         }
     }, [myWallet]);
+    useEffect(() => {
+        if (currentPosition) {
+            getNearMePlaces();
+
+        }
+    }, [currentPosition]);
+
+    type Coordinates = {
+        lat: number;
+        lng: number;
+    };
+    const calculateDistance = (coord1: Coordinates, coord2: Coordinates): number => {
+        const R = 6371000; // Dünya'nın yarıçapı (metre cinsinden)
+
+        const lat1 = (coord1.lat * Math.PI) / 180;
+        const lat2 = (coord2.lat * Math.PI) / 180;
+        const deltaLat = ((coord2.lat - coord1.lat) * Math.PI) / 180;
+        const deltaLng = ((coord2.lng - coord1.lng) * Math.PI) / 180;
+
+        const a =
+            Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+            Math.cos(lat1) * Math.cos(lat2) * Math.sin(deltaLng / 2) * Math.sin(deltaLng / 2);
+
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c; // Mesafe (metre)
+    };
+
     return (
         <LayoutWrapper>
             <div className="w-full h-screen overflow-hidden flex flex-col items-start justify-between bg-white">
+                <div className={`${placesWindow ? 'top-0' : 'top-[1000px] '} transition-all duration-300 w-full h-screen absolute z-50 bg-white flex flex-col justify-start items-start`}>
+                    <div className="bg-[#24A1DE] w-full flex justify-between items-center px-8 py-4">
+                        <div className="w-full flex justify-start items-center gap-4">
+                            <div className="flex flex-col justify-start items-start gap-1 text-white">
+                                <div className="text-xl">Near Places</div>
+                            </div>
+                        </div>
+                        <div
+                            className=""
+                            onClick={() => {
+                                setPlacesWindow(false)
+                            }}
+                        >
+                            <Image alt="left" src={leftArrow} className="rotate-180"></Image>
+                        </div>
+                    </div>
+                    <div className="w-full flex flex-col justify-start items-start gap-4 p-2">
+                        {
+                            places?.map((place) => (
+                                <div key={place.place_id} className="w-full flex justify-start items-center gap-2">
+
+                                    <Image alt="photo" src={place.icon} width={35} height={35} className=""></Image>
+                                    <div className="w-full flex flex-col justify-start items-start ">
+                                        <p className="text-2xs">{place.name}</p>
+                                        <p className="text-2xs">{
+                                            currentPosition
+                                                ? ((calculateDistance(currentPosition, place.geometry.location) / 1000).toFixed(2)) + " km"
+                                                : null
+                                        }</p>
+                                    </div>
+                                </div>
+                            ))
+                        }
+                    </div>
+                </div>
                 <div className="w-full flex flex-col items-start">
                     <div className="bg-[#24A1DE] w-full flex justify-between items-center px-8 py-4">
                         <div className="w-full flex justify-start items-center gap-4">
@@ -53,7 +203,7 @@ export default function Pin() {
                             </div>
                             <div className="flex flex-col justify-start items-start gap-1 text-white">
                                 <div className="text-xl">Starbucks</div>
-                                <div className="text-sm">Change Location </div>
+                                <button onClick={() => { setPlacesWindow(true) }} className="text-sm">Change Location </button>
                             </div>
                         </div>
                         <div
