@@ -11,7 +11,7 @@ import leftArrow from "@/public/images/right-arrow.svg";
 import points from "@/public/pinnerimages/points.png";
 import add from "@/public/pinnerimages/􀉰.svg";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTonWallet } from "@tonconnect/ui-react";
 import LayoutWrapper from "@/layout";
 import ApiService from "@/utils/api-service";
@@ -51,6 +51,10 @@ export default function Pin() {
         user_ratings_total: number;
         vicinity: string;
     };
+    type Coordinates = {
+        lat: number;
+        lng: number;
+    };
     const router = useRouter();
     const path = usePathname();
     const myWallet = useTonWallet();
@@ -64,7 +68,48 @@ export default function Pin() {
         lat: number;
         lng: number;
     } | null>(null);
-    useEffect(() => { getNavigation() }, []);
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+    const capturePhoto = async () => {
+        try {
+            // Kamera akışını başlat
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: false,
+            });
+
+            // Geçici bir video elementi oluşturalım
+            const video = document.createElement("video");
+            video.srcObject = stream;
+            video.play();
+
+            // Video hazır olduğunda fotoğrafı yakalayalım
+            video.onloadedmetadata = () => {
+                if (canvasRef.current) {
+                    const context = canvasRef.current.getContext("2d");
+                    if (context) {
+                        canvasRef.current.width = video.videoWidth;
+                        canvasRef.current.height = video.videoHeight;
+                        context.drawImage(video, 0, 0);
+
+                        // Kamera akışını durdur
+                        stream.getTracks().forEach((track) => track.stop());
+                    }
+                }
+            };
+        } catch (error) {
+            console.error("Kamera erişim hatası:", error);
+        }
+    };
+    const downloadPhoto = () => {
+        if (canvasRef.current) {
+            const dataUrl = canvasRef.current.toDataURL("image/jpeg");
+            const link = document.createElement("a");
+            link.href = dataUrl;
+            link.download = "photo.jpg";
+            link.click();
+        }
+    };
     async function fetchNFTs() {
         const response = await fetch('/api/nfts?wallet=' + myWallet?.account.address);
         if (!response.ok) {
@@ -101,26 +146,13 @@ export default function Pin() {
         }
         setLoading(false);
     }
-
-    useEffect(() => {
-        async function loadNFTs() {
-            try {
-                const data = await fetchNFTs(); // API'den gelen JSON
-                setNfts(data.nft_items); // Gelen verinin 'nfts' kısmını state'e ata
-            } catch (err: any) {
-                setError(err.message); // Hata varsa state'e ata
-            }
-        }
-        if (myWallet) {
-            loadNFTs();
-        }
-    }, [myWallet]);
-    const getNavigation = () => {
+    function getNavigation() {
         if (navigator.geolocation) {
             navigator.geolocation.watchPosition(
                 (position) => {
                     const { latitude, longitude } = position.coords;
                     setCurrentPosition({ lat: latitude, lng: longitude });
+                    localStorage.setItem('latlong', JSON.stringify({ lat: latitude, lng: longitude }));
                     console.log('navigator.geolocation');
                 },
                 (error) => {
@@ -132,18 +164,6 @@ export default function Pin() {
             console.error("Geolocation API desteklenmiyor.");
         }
     }
-    useEffect(() => {
-        if (currentPosition) {
-            console.log('currentPosition');
-            getNearMePlaces();
-        }
-
-    }, [currentPosition]);
-
-    type Coordinates = {
-        lat: number;
-        lng: number;
-    };
     const calculateDistance = (coord1: Coordinates, coord2: Coordinates): number => {
         const R = 6371000; // Dünya'nın yarıçapı (metre cinsinden)
 
@@ -160,6 +180,36 @@ export default function Pin() {
 
         return R * c; // Mesafe (metre)
     };
+
+    useEffect(() => {
+        getNavigation()
+    }, []);
+    useEffect(() => {
+        async function loadNFTs() {
+            try {
+                const data = await fetchNFTs(); // API'den gelen JSON
+                setNfts(data.nft_items); // Gelen verinin 'nfts' kısmını state'e ata
+            } catch (err: any) {
+                setError(err.message); // Hata varsa state'e ata
+            }
+        }
+        if (myWallet) {
+            loadNFTs();
+        }
+    }, [myWallet]);
+    useEffect(() => {
+        if (!currentPosition) {
+            console.log('currentPosition', currentPosition);
+            getNavigation();
+            const latlong = localStorage.getItem('latlong');
+            if (latlong) {
+                setCurrentPosition(JSON.parse(latlong));
+            }
+        }
+        if (currentPosition) {
+            getNearMePlaces();
+        }
+    }, [currentPosition]);
 
     return (
         <LayoutWrapper>
@@ -207,7 +257,7 @@ export default function Pin() {
                                 <Image alt="pp" src={human} className="w-full aspect-square rounded-full" />
                             </div>
                             <div className="flex flex-col justify-start items-start gap-1 text-white">
-                                <div className="text-xl">{pinnedPlace}</div>
+                                <div className="text-xs0ii,">{pinnedPlace}</div>
                                 <button onClick={() => { setPlacesWindow(true) }} className="text-sm">Change Location</button>
                             </div>
                         </div>
@@ -223,7 +273,10 @@ export default function Pin() {
                         </div>
                     </div>
                     <div className="w-full flex justify-start items-center gap-2 px-8 py-4">
-                        <Image alt="photo" src={photo} className="w-10 aspect-square"></Image>
+                        <button onClick={capturePhoto}>
+                            <Image alt="photo" src={photo} className="w-10 aspect-square"></Image>
+                        </button>
+                        <button onClick={downloadPhoto}>Download Photo</button>
                         <div className="w-[1px] h-full bg-blue-500"></div>
                         {
                             nfts?.length === 0 &&

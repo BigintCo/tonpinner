@@ -4,6 +4,7 @@ we need to make this component client rendered as well*/
 
 //Map component Component from library
 import { GoogleMap, Marker } from "@react-google-maps/api";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 //Map's styling
@@ -35,18 +36,20 @@ const markers = [
 
 
 const MapComponent = () => {
+    const pathname = usePathname();
     const [currentPosition, setCurrentPosition] = useState<{
         lat: number;
         lng: number;
     } | null>(null);
 
-    useEffect(() => {
-        // Kullanıcının konumunu al
+    function getNavigation() {
+        console.log(pathname, 'pathname');
         if (navigator.geolocation) {
             const watchId = navigator.geolocation.watchPosition(
                 (position) => {
                     const { latitude, longitude } = position.coords;
                     setCurrentPosition({ lat: latitude, lng: longitude });
+                    localStorage.setItem('latlong', JSON.stringify({ lat: latitude, lng: longitude }));
                 },
                 (error) => {
                     console.error("Konum alınırken hata oluştu:", error);
@@ -59,7 +62,17 @@ const MapComponent = () => {
         } else {
             console.error("Geolocation API desteklenmiyor.");
         }
-    }, []);
+    }
+    useEffect(() => {
+        if (!currentPosition) {
+            console.log('currentPosition', currentPosition);
+            getNavigation();
+            const latlong = localStorage.getItem('latlong');
+            if (latlong) {
+                setCurrentPosition(JSON.parse(latlong));
+            }
+        }
+    }, [currentPosition]);
     return (
         <div className="w-full">
             <GoogleMap
