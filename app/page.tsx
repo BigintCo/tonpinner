@@ -161,7 +161,7 @@ export default function Home() {
       }
       {
         loginStatus &&
-        <div className="w-full h-screen overflow-hidden flex flex-col items-start relative bg-white">
+        <div className="w-full h-screen flex flex-col items-start relative bg-white">
           {
             openModal &&
             <div className="absolute top-0 left-0 w-screen h-screen bg-black/30 z-50 px-8 flex justify-center items-center">
