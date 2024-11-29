@@ -210,7 +210,6 @@ export default function Pin() {
     return (
         <LayoutWrapper>
             <div key={path} className="w-full h-screen flex flex-col items-start justify-between bg-white relative">
-
                 <div className={`${placesWindow ? 'top-0' : 'top-[1000px] '} transition-all duration-300 w-full h-screen absolute z-40 bg-white flex flex-col justify-start items-start`}>
                     <div className="bg-[#24A1DE] w-full flex justify-between items-center px-8 py-4">
                         <div className="w-full flex justify-start items-center gap-4">
@@ -249,14 +248,14 @@ export default function Pin() {
                 </div>
 
                 <div className="w-full flex flex-col items-start">
-                    <div className="bg-[#24A1DE] w-full flex justify-between items-center px-8 py-4">
+                    <div className="bg-[#24A1DE] w-full flex justify-between items-center px-8 py-2">
                         <div className="w-full flex justify-start items-center gap-4">
-                            <div className="w-16 aspect-square rounded-full border-2 border-white">
+                            <div className="w-12 aspect-square rounded-full border-2 border-white">
                                 <Image alt="pp" src={human} className="w-full aspect-square rounded-full" />
                             </div>
                             <div className="flex flex-col justify-start items-start gap-1 text-white">
-                                <div className="text-xs,">{pinnedPlace}</div>
-                                <button onClick={() => { setPlacesWindow(true) }} className="text-sm">Change Location</button>
+                                <div className="text-xs">{pinnedPlace}</div>
+                                <button onClick={() => { setPlacesWindow(true) }} className="text-xs">Change Location</button>
                             </div>
                         </div>
                         <div
@@ -270,7 +269,7 @@ export default function Pin() {
                             <Image alt="left" src={leftArrow} className="rotate-180"></Image>
                         </div>
                     </div>
-                    <div className="w-full flex flex-col justify-start items-center gap-5 px-8 py-4">
+                    <div className="w-full flex flex-col justify-start items-center gap-5 px-8 py-2">
                         <div className="w-full flex flex-col justify-start items-center">
                             {!photo ? (
                                 <div className="w-full flex flex-col justify-start items-center gap-2">
