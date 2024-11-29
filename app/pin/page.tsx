@@ -16,8 +16,11 @@ import { useTonWallet } from "@tonconnect/ui-react";
 import LayoutWrapper from "@/layout";
 import ApiService from "@/utils/api-service";
 import { toast } from "react-toastify";
+import { useAppContext } from "@/providers/app-provider";
 
 export default function Pin() {
+    const { userToken, handleUserToken, user } = useAppContext();
+
     type IPlaces = {
         geometry: {
             location: {
@@ -98,10 +101,23 @@ export default function Pin() {
                 canvas.width = videoRef.current.videoWidth;
                 canvas.height = videoRef.current.videoHeight;
                 context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-                const imageData = canvas.toDataURL("image/png");
-                setPhoto(imageData);
-                setCameraOn(false);
 
+                const imageData = canvas.toDataURL("image/png");
+                const byteString = atob(imageData.split(",")[1]); // Base64'ü çöz
+                const mimeString = imageData.split(",")[0].split(":")[1].split(";")[0]; // MIME türü
+                const arrayBuffer = new Uint8Array(byteString.length);
+                for (let i = 0; i < byteString.length; i++) {
+                    arrayBuffer[i] = byteString.charCodeAt(i);
+                }
+                const blob = new Blob([arrayBuffer], { type: mimeString });
+
+                // Blob'u bir File nesnesine çevir
+                const file = new File([blob], "photo.png", { type: mimeString });
+
+                // Fotoğrafı state'e kaydet veya bir API'ye gönder
+                setPhoto(imageData); // Görüntüyü Base64 olarak tutmaya devam edebilirsiniz
+                console.log("File:", file);
+                setCameraOn(false);
             }
         }
     };
@@ -248,11 +264,18 @@ export default function Pin() {
                 </div>
 
                 <div className="w-full flex flex-col items-start">
-                    <div className="bg-[#24A1DE] w-full flex justify-between items-center px-8 py-2">
+                    <div className="bg-[#24A1DE] w-full flex justify-between items-center px-8 py-4">
                         <div className="w-full flex justify-start items-center gap-4">
-                            <div className="w-12 aspect-square rounded-full border-2 border-white">
-                                <Image alt="pp" src={human} className="w-full aspect-square rounded-full" />
-                            </div>
+                            {
+                                user?.photoUrl ?
+                                    <div className="w-10 aspect-square rounded-full border-2 border-white">
+                                        <Image alt="pp" src={user?.photoUrl} width={40} height={40} className="w-full aspect-square rounded-full" />
+                                    </div>
+                                    :
+                                    <div className="w-10 aspect-square rounded-full border-2 border-white">
+                                        <Image alt="pp" src={human} className="w-14 aspect-square rounded-full" />
+                                    </div>
+                            }
                             <div className="flex flex-col justify-start items-start gap-1 text-white">
                                 <div className="text-xs">{pinnedPlace}</div>
                                 <button onClick={() => { setPlacesWindow(true) }} className="text-xs">Change Location</button>
@@ -278,14 +301,14 @@ export default function Pin() {
                                         <canvas ref={canvasRef} style={{ display: "none" }} />
                                     </div>
                                     <button className={`bg-pinner text-white py-2 px-4 rounded-lg text-xs ${isCameraOn ? 'block' : 'hidden'}`} onClick={takePhoto}>Take Photo</button>
-                               
+
                                 </div>
                             ) : (
                                 <div className="w-full flex flex-col justify-start items-center gap-2">
                                     <img src={photo} alt="photo" />
                                     <button
                                         className="bg-pinner text-white py-2 px-4 rounded-lg text-xs"
-                                        onClick={() => {setPhoto(null); startCamera()}}>
+                                        onClick={() => { setPhoto(null); startCamera() }}>
                                         Take Photo Again</button>
                                 </div>
                             )}
