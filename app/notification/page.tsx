@@ -19,7 +19,7 @@ export default function Home() {
 
   return (
     <LayoutWrapper>
-      <div className="w-full h-screen overflow-hidden flex flex-col items-start relative bg-white">
+      <div className="w-full h-screen flex flex-col items-start relative bg-white">
         <div className="bg-[#24A1DE] w-full px-8 py-4 ">
           <div className="w-full flex justify-between items-center gap-4">
             {

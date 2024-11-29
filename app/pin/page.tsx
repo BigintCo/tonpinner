@@ -209,7 +209,7 @@ export default function Pin() {
 
     return (
         <LayoutWrapper>
-            <div key={path} className="w-full h-screen overflow-hidden flex flex-col items-start justify-between bg-white relative">
+            <div key={path} className="w-full h-screen flex flex-col items-start justify-between bg-white relative">
 
                 <div className={`${placesWindow ? 'top-0' : 'top-[1000px] '} transition-all duration-300 w-full h-screen absolute z-40 bg-white flex flex-col justify-start items-start`}>
                     <div className="bg-[#24A1DE] w-full flex justify-between items-center px-8 py-4">
