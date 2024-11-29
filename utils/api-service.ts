@@ -20,7 +20,6 @@ class ApiService {
                     config.headers['Authorization'] = `Bearer ${token}`;
 
                 }
-                config.headers['x-white-label-key'] = process.env.NEXT_PUBLIC_WHITE_LABEL_KEY;
                 return config;
             },
             (error) => {

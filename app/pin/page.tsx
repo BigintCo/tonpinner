@@ -17,6 +17,7 @@ import LayoutWrapper from "@/layout";
 import ApiService from "@/utils/api-service";
 import { toast } from "react-toastify";
 import { useAppContext } from "@/providers/app-provider";
+import axios from "axios";
 
 export default function Pin() {
     const { userToken, handleUserToken, user } = useAppContext();
@@ -67,7 +68,9 @@ export default function Pin() {
     const [places, setPlaces] = useState<IPlaces[] | null>(null);
     const [nfts, setNfts] = useState<any[] | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const [cameraOn, setCameraOn] = useState<boolean>(false);
+    const [placePhoto, setPlacePhoto] = useState<File>();
+    const [content, setContent] = useState<string>('');
+
     const [currentPosition, setCurrentPosition] = useState<{
         lat: number;
         lng: number;
@@ -93,7 +96,6 @@ export default function Pin() {
         }
     };
     const takePhoto = () => {
-
         if (videoRef.current && canvasRef.current) {
             const canvas = canvasRef.current;
             const context = canvas.getContext("2d");
@@ -110,14 +112,11 @@ export default function Pin() {
                     arrayBuffer[i] = byteString.charCodeAt(i);
                 }
                 const blob = new Blob([arrayBuffer], { type: mimeString });
-
-                // Blob'u bir File nesnesine çevir
                 const file = new File([blob], "photo.png", { type: mimeString });
 
-                // Fotoğrafı state'e kaydet veya bir API'ye gönder
-                setPhoto(imageData); // Görüntüyü Base64 olarak tutmaya devam edebilirsiniz
-                console.log("File:", file);
-                setCameraOn(false);
+                setPhoto(imageData);
+                setPlacePhoto(file);
+                setIsCameraOn(false);
             }
         }
     };
@@ -192,6 +191,52 @@ export default function Pin() {
 
         return R * c; // Mesafe (metre)
     };
+    const pinMe = async () => {
+        if (pinValidation()) {
+            try {
+                if (placePhoto) {
+                    const formData = new FormData();
+                    formData.append('content', content);
+                    formData.append('place', pinnedPlace);
+                    formData.append('photo', placePhoto);
+                    const { data } = await axios.post(`/checkin/withPhoto`, formData,{
+                        headers: {
+                          "Content-Type": "multipart/form-data", // Gerekli değil, Axios otomatik ayarlıyor
+                        },
+                      })
+                    if (data) {
+                        toast('Pinned successfully', { type: 'success' });
+                        localStorage.setItem("firstPin", "true");
+                        router.push('/');
+                    }
+                }
+                else {
+                    const { data } = await ApiService.post(`/checkin/withOutPhoto`, {
+                        content: content,
+                        place: pinnedPlace
+                    });
+                    if (data) {
+                        toast('Pinned successfully', { type: 'success' });
+                        localStorage.setItem("firstPin", "true");
+                        router.push('/');
+                    }
+                }
+            } catch (e: any) {
+                toast(e?.response?.data?.error, { type: 'error' })
+            }
+        }
+    }
+    const pinValidation = () => {
+        if (!content) {
+            toast('Please write a content', { type: 'error' });
+            return false;
+        }
+        if (pinnedPlace === 'Choose a place') {
+            toast('Please choose a place', { type: 'error' });
+            return false;
+        }
+        return true;
+    }
 
     useEffect(() => {
         getNavigation()
@@ -343,7 +388,7 @@ export default function Pin() {
                         </div>
                     </div>
                     <label htmlFor="" className="w-full px-8 py-2 h-[150px] flex flex-col justify-start items-end gap-2">
-                        <textarea className="rounded-lg border p-1 border-blue-600/30 w-full h-full focus-within:outline-none flex justify-start items-start" />
+                        <textarea value={content} onChange={(e) => { setContent((e.target.value).toString()) }} className="rounded-lg border p-1 border-blue-600/30 w-full h-full focus-within:outline-none flex justify-start items-start" />
                         <Image alt="add" src={add}></Image>
                     </label>
                     <div className="w-full flex justify-between items-center gap-2 px-8 py-2 ">
@@ -354,8 +399,7 @@ export default function Pin() {
                             className="w-full flex justify-center items-center py-2 px-4 rounded-lg border border-blue-600/30 text-sm text-pinner">Cancel</button>
                         <button
                             onClick={() => {
-                                router.push("/");
-                                localStorage.setItem("firstPin", "true");
+                                pinMe();
                             }}
                             className="w-full flex justify-center items-center py-2 px-4 rounded-lg border bg-pinner text-sm text-white">Pin Me</button>
                     </div>
