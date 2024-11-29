@@ -200,9 +200,11 @@ export default function Pin() {
                     formData.append('place', pinnedPlace);
                     formData.append('photo', placePhoto);
                     const { data } = await axios.post(`/checkin/withPhoto`, formData,{
+                        baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
                         headers: {
-                          "Content-Type": "multipart/form-data", // Gerekli değil, Axios otomatik ayarlıyor
-                        },
+                          "Content-Type": "multipart/form-data",
+                          "Authorization" : `Bearer ${localStorage.getItem('token')}`,
+                          },
                       })
                     if (data) {
                         toast('Pinned successfully', { type: 'success' });
