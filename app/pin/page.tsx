@@ -83,7 +83,7 @@ export default function Pin() {
     const startCamera = async () => {
         try {
             setIsCameraOn(true);
-
+          
             const stream = await navigator.mediaDevices.getUserMedia({
                 video: { facingMode: "user" },
             });
@@ -215,7 +215,7 @@ export default function Pin() {
                 else {
                     const { data } = await ApiService.post(`/checkin/withOutPhoto`, {
                         content: content,
-                        place: pinnedPlace
+                        place: JSON.stringify(localStorage.getItem('pinnedPlace'))
                     });
                     if (data) {
                         toast('Pinned successfully', { type: 'success' });
@@ -344,7 +344,7 @@ export default function Pin() {
                             {!photo ? (
                                 <div className="w-full flex flex-col justify-start items-center gap-2">
                                     <div>
-                                        <video ref={videoRef} className={`${isCameraOn ? 'block' : 'hidden'}`} />
+                                        <video ref={videoRef} className={`${isCameraOn ? 'block' : 'hidden'}`} autoPlay playsInline  />
                                         <canvas ref={canvasRef} style={{ display: "none" }} />
                                     </div>
                                     <button className={`bg-pinner text-white py-2 px-4 rounded-lg text-xs ${isCameraOn ? 'block' : 'hidden'}`} onClick={takePhoto}>Take Photo</button>

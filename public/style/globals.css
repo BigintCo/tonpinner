@@ -140,3 +140,61 @@ body {
 .bg-pinner {
   background-color: #24A1DE;
 }
+.camera-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background-color: black;
+  overflow: hidden;
+}
+
+.camera-feed {
+  position: relative;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.capture-button,
+.start-camera {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.photo-preview {
+  position: relative;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.photo-preview img {
+  max-width: 90%;
+  border: 2px solid white;
+  border-radius: 8px;
+}
+
+.photo-preview button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
