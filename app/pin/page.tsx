@@ -197,7 +197,7 @@ export default function Pin() {
                 if (placePhoto) {
                     const formData = new FormData();
                     formData.append('content', content);
-                    formData.append('place', pinnedPlace);
+                    formData.append('place', JSON.stringify(localStorage.getItem('pinnedPlace')));
                     formData.append('photo', placePhoto);
                     const { data } = await axios.post(`/checkin/withPhoto`, formData,{
                         baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
