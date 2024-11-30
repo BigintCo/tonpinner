@@ -79,48 +79,54 @@ export default function Pin() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [photo, setPhoto] = useState<string | null>(null);
     const [isCameraOn, setIsCameraOn] = useState(false);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-    const startCamera = async () => {
-        try {
-            setIsCameraOn(true);
-          
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: "user" },
-            });
-            if (videoRef.current) {
-                videoRef.current.srcObject = stream;
-                videoRef.current.play();
-            }
-        } catch (error) {
-            console.error("Kamera erişimi reddedildi veya başka bir hata oluştu.", error);
+    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            setSelectedFile(file);
         }
     };
-    const takePhoto = () => {
-        if (videoRef.current && canvasRef.current) {
-            const canvas = canvasRef.current;
-            const context = canvas.getContext("2d");
-            if (context) {
-                canvas.width = videoRef.current.videoWidth;
-                canvas.height = videoRef.current.videoHeight;
-                context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+    // const startCamera = async () => {
+    //     try {
+    //         setIsCameraOn(true);
 
-                const imageData = canvas.toDataURL("image/png");
-                const byteString = atob(imageData.split(",")[1]); // Base64'ü çöz
-                const mimeString = imageData.split(",")[0].split(":")[1].split(";")[0]; // MIME türü
-                const arrayBuffer = new Uint8Array(byteString.length);
-                for (let i = 0; i < byteString.length; i++) {
-                    arrayBuffer[i] = byteString.charCodeAt(i);
-                }
-                const blob = new Blob([arrayBuffer], { type: mimeString });
-                const file = new File([blob], "photo.png", { type: mimeString });
+    //         const stream = await navigator.mediaDevices.getUserMedia({
+    //             video: { facingMode: "user" },
+    //         });
+    //         if (videoRef.current) {
+    //             videoRef.current.srcObject = stream;
+    //             videoRef.current.play();
+    //         }
+    //     } catch (error) {
+    //         console.error("Kamera erişimi reddedildi veya başka bir hata oluştu.", error);
+    //     }
+    // };
+    // const takePhoto = () => {
+    //     if (videoRef.current && canvasRef.current) {
+    //         const canvas = canvasRef.current;
+    //         const context = canvas.getContext("2d");
+    //         if (context) {
+    //             canvas.width = videoRef.current.videoWidth;
+    //             canvas.height = videoRef.current.videoHeight;
+    //             context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
-                setPhoto(imageData);
-                setPlacePhoto(file);
-                setIsCameraOn(false);
-            }
-        }
-    };
+    //             const imageData = canvas.toDataURL("image/png");
+    //             const byteString = atob(imageData.split(",")[1]); // Base64'ü çöz
+    //             const mimeString = imageData.split(",")[0].split(":")[1].split(";")[0]; // MIME türü
+    //             const arrayBuffer = new Uint8Array(byteString.length);
+    //             for (let i = 0; i < byteString.length; i++) {
+    //                 arrayBuffer[i] = byteString.charCodeAt(i);
+    //             }
+    //             const blob = new Blob([arrayBuffer], { type: mimeString });
+    //             const file = new File([blob], "photo.png", { type: mimeString });
 
+    //             setPhoto(imageData);
+    //             setPlacePhoto(file);
+    //             setIsCameraOn(false);
+    //         }
+    //     }
+    // };
     async function fetchNFTs() {
         const response = await fetch('/api/nfts?wallet=' + myWallet?.account.address);
         if (!response.ok) {
@@ -194,18 +200,18 @@ export default function Pin() {
     const pinMe = async () => {
         if (pinValidation()) {
             try {
-                if (placePhoto) {
+                if (selectedFile) {
                     const formData = new FormData();
                     formData.append('content', content);
                     formData.append('place', JSON.stringify(localStorage.getItem('pinnedPlace')));
-                    formData.append('photo', placePhoto);
-                    const { data } = await axios.post(`/checkin/withPhoto`, formData,{
+                    formData.append('photo', selectedFile);
+                    const { data } = await axios.post(`/checkin/withPhoto`, formData, {
                         baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
                         headers: {
-                          "Content-Type": "multipart/form-data",
-                          "Authorization" : `Bearer ${localStorage.getItem('token')}`,
-                          },
-                      })
+                            "Content-Type": "multipart/form-data",
+                            "Authorization": `Bearer ${localStorage.getItem('token')}`,
+                        },
+                    })
                     if (data) {
                         toast('Pinned successfully', { type: 'success' });
                         localStorage.setItem("firstPin", "true");
@@ -341,32 +347,40 @@ export default function Pin() {
                     </div>
                     <div className="w-full flex flex-col justify-start items-center gap-5 px-8 py-2">
                         <div className="w-full flex flex-col justify-start items-center">
-                            {!photo ? (
-                                <div className="w-full flex flex-col justify-start items-center gap-2">
-                                    <div>
-                                        <video ref={videoRef} className={`${isCameraOn ? 'block' : 'hidden'}`} autoPlay playsInline  />
-                                        <canvas ref={canvasRef} style={{ display: "none" }} />
-                                    </div>
-                                    <button className={`bg-pinner text-white py-2 px-4 rounded-lg text-xs ${isCameraOn ? 'block' : 'hidden'}`} onClick={takePhoto}>Take Photo</button>
-
-                                </div>
-                            ) : (
-                                <div className="w-full flex flex-col justify-start items-center gap-2">
-                                    <img src={photo} alt="photo" />
-                                    <button
-                                        className="bg-pinner text-white py-2 px-4 rounded-lg text-xs"
-                                        onClick={() => { setPhoto(null); startCamera() }}>
-                                        Take Photo Again</button>
+                            {/* <button className={`bg-pinner text-white py-2 px-4 rounded-lg text-xs ${isCameraOn ? 'block' : 'hidden'}`} onClick={takePhoto}>Take Photo</button> */}
+                            { selectedFile && (
+                                <div className="flex flex-col justify-start items-center gap-2 w-full h-40">
+                                    <img src={URL.createObjectURL(selectedFile)} alt="photo" className="object-contain w-full h-full" />
                                 </div>
                             )}
                         </div>
                         <div className="w-full flex justify-between items-center">
                             <div className="w-full flex justify-start items-center gap-2">
-                                <button onClick={startCamera}>
+                                <label
+                                    htmlFor="upload"
+                                    className="flex flex-col items-center justify-start aspect-square bg-body-active bg-opacity-20 gap-5 border cursor-pointer
+                           transition-all duration-200
+                           border-white border-opacity-10 rounded-lg  hover:border-opacity-[.15]">
+                                    <input id="upload"
+                                        onChange={(e) => {
+                                            e.preventDefault(); e.stopPropagation();
+                                            if (!e.target.files?.[0]) return;
+                                            if (e.target.files?.[0]?.size > 25 * 1024 * 1024) {
+                                                toast('Max size: 25MB', { type: 'warning' })
+                                            }
+                                            console.log(e.target.files?.[0]);
+                                            setSelectedFile(e.target.files?.[0] as File)
+                                        }}
+                                        type="file" className="hidden"
+                                        accept="image/png, image/jpeg, image/jpg" />
+                                    <div className="relative">
+                                        <Image alt="photo" src={photoCam} className="w-10 aspect-square"></Image>
+                                    </div>
+                                </label>
+                                {/* <button onClick={startCamera}>
                                     <Image alt="photo" src={photoCam} className="w-10 aspect-square"></Image>
-                                </button>
+                                </button> */}
                                 <div className="h-[40px] w-[1px] bg-pinner"></div>
-
                                 {
                                     nfts?.length === 0 &&
                                     <div className="w-full flex justify-start items-center gap-1">
