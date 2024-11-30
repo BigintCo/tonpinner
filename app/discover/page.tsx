@@ -12,17 +12,45 @@ import notificationIcon from "@/public/pinnerimages/bell.svg";
 import location from "@/public/pinnerimages/geo-alt.svg";
 import discover from "@/public/pinnerimages/discover.svg";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { TonConnectButton } from "@tonconnect/ui-react";
 import LayoutWrapper from "@/layout";
 import { useAppContext } from "@/providers/app-provider";
+import ApiService from "@/utils/api-service";
+import { toast } from "react-toastify";
 
 
 export default function Home() {
+  type IPost = {
+    content: string;
+    photoURI: string;
+  };
   const { user } = useAppContext();
   const [openMenu, setOpenMenu] = useState(false);
   const [section, setSection] = useState<number>(0);
-
+  const [loading, setLoading] = useState<boolean>(false);
+  const [posts, setPosts] = useState<IPost[]>([]);
+  async function getDiscoverPosts() {
+    setLoading(true);
+    try {
+      if (localStorage.getItem('token')) {
+        const { data } = await ApiService.query(`/checkin`, { isOnlyPhoto: true });
+        if (data) {
+          setPosts(data);
+        }
+        // else {
+        //     localStorage.removeItem('token');
+        // }
+      }
+    } catch (e: any) {
+      // localStorage.removeItem('token');
+      toast(e?.response?.data?.error, { type: 'error' })
+    }
+    setLoading(false);
+  }
+  useEffect(() => {
+    getDiscoverPosts()
+  }, []);
   return (
     <LayoutWrapper>
       <div className="w-full h-screen flex flex-col items-start relative bg-white">
@@ -61,71 +89,31 @@ export default function Home() {
             </div>
           </div>
           <div className="w-full grid grid-cols-12 justify-start items-start gap-1">
-            <div className="col-span-4">
-              <Image alt="image" className="w-full aspect-square" src={mekan1}></Image>
-            </div>
-            <div className="col-span-4">
-              <Image alt="image" className="w-full aspect-square" src={mekan2}></Image>
-            </div>
-            <div className="col-span-4">
-              <Image alt="image" className="w-full aspect-square" src={mekan3}></Image>
-            </div>
-            <div className="col-span-4">
-              <Image alt="image" className="w-full aspect-square" src={mekan4}></Image>
-            </div>
-            <div className="col-span-4">
-              <Image alt="image" className="w-full aspect-square" src={mekan3}></Image>
-            </div>
-            <div className="col-span-4">
-              <Image alt="image" className="w-full aspect-square" src={mekan4}></Image>
-            </div>
-            <div className="col-span-4">
-              <Image alt="image" className="w-full aspect-square" src={mekan2}></Image>
-            </div>
-            <div className="col-span-4">
-              <Image alt="image" className="w-full aspect-square" src={mekan3}></Image>
-            </div>
-            <div className="col-span-4">
-              <Image alt="image" className="w-full aspect-square" src={mekan1}></Image>
-            </div>
-            <div className="col-span-4">
-              <Image alt="image" className="w-full aspect-square" src={mekan2}></Image>
-            </div>
-            <div className="col-span-4">
-              <Image alt="image" className="w-full aspect-square" src={mekan3}></Image>
-            </div>
-            <div className="col-span-4">
-              <Image alt="image" className="w-full aspect-square" src={mekan4}></Image>
-            </div>
-            <div className="col-span-4">
-              <Image alt="image" className="w-full aspect-square" src={mekan3}></Image>
-            </div>
-            <div className="col-span-4">
-              <Image alt="image" className="w-full aspect-square" src={mekan4}></Image>
-            </div>
-            <div className="col-span-4">
-              <Image alt="image" className="w-full aspect-square" src={mekan2}></Image>
-            </div>
-            <div className="col-span-4">
-              <Image alt="image" className="w-full aspect-square" src={mekan3}></Image>
-            </div>
+            {
+              posts.map((post, index) => (
+                <div key={index} className="col-span-4">
+                  <img alt="image" className="w-full aspect-square" src={post.photoURI}></img>
+                </div>
+              ))
+            }
+
           </div>
         </div>
         <div className="w-full flex justify-between gap-10 items-end px-16 py-3 relative border-t border-[#24A1DE]/30">
-            <Link href={'/discover'} className="w-7 aspect-auto flex flex-col justify-center items-center gap-1">
-              <Image alt="icon" src={discover} className="w-full aspect-square"></Image>
-              <span className="text-xs text-gray-700">Discover</span>
-            </Link>
-            <Link href={'/pin'} className="flex justify-center items-center aspect-auto rounded-full p-2 absolute left-1/2 -translate-x-1/2 -top-1/2 translate-y-3  bg-white">
-              <div className="w-full aspect-square bg-pinner flex justify-center items-center rounded-full p-4">
-                <Image alt="icon" src={location} className="w-6"></Image>
-              </div>
-            </Link>
-            <Link href={'/notification'} className="w-7 aspect-auto flex flex-col justify-center items-center gap-1">
-              <Image alt="icon" src={notificationIcon} className="w-full aspect-square"></Image>
-              <span className="text-xs text-gray-700">Notification</span>
-            </Link>
-          </div>
+          <Link href={'/discover'} className="w-7 aspect-auto flex flex-col justify-center items-center gap-1">
+            <Image alt="icon" src={discover} className="w-full aspect-square"></Image>
+            <span className="text-xs text-gray-700">Discover</span>
+          </Link>
+          <Link href={'/pin'} className="flex justify-center items-center aspect-auto rounded-full p-2 absolute left-1/2 -translate-x-1/2 -top-1/2 translate-y-3  bg-white">
+            <div className="w-full aspect-square bg-pinner flex justify-center items-center rounded-full p-4">
+              <Image alt="icon" src={location} className="w-6"></Image>
+            </div>
+          </Link>
+          <Link href={'/notification'} className="w-7 aspect-auto flex flex-col justify-center items-center gap-1">
+            <Image alt="icon" src={notificationIcon} className="w-full aspect-square"></Image>
+            <span className="text-xs text-gray-700">Notification</span>
+          </Link>
+        </div>
         {
           openMenu &&
           <div className="w-full h-[200px] absolute bottom-0 left-0 bg-white z-50 flex justify-center items-center rounded-t-xl  border-t border-blue-500">
