@@ -165,7 +165,9 @@ export default function Home() {
           {
             openModal &&
             <div className="absolute top-0 left-0 w-screen h-screen bg-black/30 z-50 px-8 flex justify-center items-center">
-              <div className="w-full flex justify-between items-start gap-5 bg-white rounded-xl p-4">
+              <div className="w-full flex justify-between items-start gap-5 bg-white rounded-xl p-4 relative">
+                <div className="w-8 flex justify-center items-center absolute right-2 top-4 aspect-square rounded-full p-1 bg-pinner text-white" onClick={()=>{localStorage.removeItem('firstPin'); setOpenModal(false)}}>X</div>
+              
                 <Image alt="hug" src={hug} className="w-12 aspect-square"></Image>
                 <div className="w-full flex flex-col justify-start items-start gap-2">
                   <div className="w-full flex flex-col justify-start items-start gap-1">

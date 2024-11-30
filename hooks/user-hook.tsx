@@ -36,12 +36,12 @@ export function useUser({ address }: { address?: string }) {
                     console.log(data, 'user');
                     handleUser(data);
                 }
-                else {
-                    localStorage.removeItem('token');
-                }
+                // else {
+                //     localStorage.removeItem('token');
+                // }
             }
         } catch (e: any) {
-            localStorage.removeItem('token');
+            // localStorage.removeItem('token');
             toast(e?.response?.data?.error, { type: 'error' })
         }
         setLoading(false);

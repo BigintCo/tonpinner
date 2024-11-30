@@ -14,7 +14,7 @@ interface CloseButtonProps {
 
 }
 export default function Settings() {
-    const { authLogin, getUser } = useUser({});
+    const { getUser } = useUser({});
     // useEffect(() => {
     //     if (!!localStorage.getItem('token')) {
     //         localStorage.setItem('token', "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVkMmZmODcyOWViZWJmMGU4YTY3MjQiLCJpYXQiOjE3MjY4MjAzNjAsImV4cCI6MTcyNzQyNTE2MH0.Do5j2pAdvDZCBOV19ELLwXxzF7-A5ic_1F3HOnlnIRI")
