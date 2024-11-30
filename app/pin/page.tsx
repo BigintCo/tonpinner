@@ -68,18 +68,17 @@ export default function Pin() {
     const [places, setPlaces] = useState<IPlaces[] | null>(null);
     const [nfts, setNfts] = useState<any[] | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const [placePhoto, setPlacePhoto] = useState<File>();
+    // const [placePhoto, setPlacePhoto] = useState<File>();
     const [content, setContent] = useState<string>('');
-
     const [currentPosition, setCurrentPosition] = useState<{
         lat: number;
         lng: number;
     } | null>(null);
-    const videoRef = useRef<HTMLVideoElement | null>(null);
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const [photo, setPhoto] = useState<string | null>(null);
-    const [isCameraOn, setIsCameraOn] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    // const videoRef = useRef<HTMLVideoElement | null>(null);
+    // const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    // const [photo, setPhoto] = useState<string | null>(null);
+    // const [isCameraOn, setIsCameraOn] = useState(false);
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
