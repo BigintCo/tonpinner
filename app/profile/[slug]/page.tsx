@@ -87,6 +87,7 @@ interface Place {
 }
 export default function Home() {
   const { slug: userTelegramId } = useParams();
+  const router = useRouter();
   const [tonConnectUI] = useTonConnectUI();
   const myWallet = useTonWallet();
   const { authLogin } = useUser({});
@@ -266,7 +267,7 @@ export default function Home() {
               </div>
               <div className="w-full flex justify-between items-center ">
                 <button className="rounded-full bg-[#24A1DE] p-2 flex justify-center items-center text-xs text-white">
-                  282 visited
+                  {posts.length} Check-ins
                 </button>
                 <button className="rounded-full bg-[#24A1DE] p-2 flex justify-center items-center text-xs text-white">
                   0 saved
@@ -275,9 +276,10 @@ export default function Home() {
                   36/100 Categories
                 </button>
               </div>
-              {/* <div className="w-full flex justify-start items-center gap-2 px-8 py-1 text-xs  border-t border-b border-gray-600/10">
-              <span className="text-pinner font-bold">400 </span> Check-ins
-            </div> */}
+              <button onClick={() => router.push('/premium')} className="w-full flex justify-center items-center gap-2 p-2 text-pinner border border-blue-500/50 rounded-3xl">
+                <Image alt="diamond" src={diamond} className="w-8 aspect-square"></Image>
+                Get Premium
+              </button>
               <div className="w-full flex flex-col justify-start items-start gap-6 py-4">
                 {posts &&
                   posts.map((post, index) => {

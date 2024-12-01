@@ -338,7 +338,7 @@ export default function Home() {
                 Get Premium
               </button>
               <div className="w-full flex justify-start items-center gap-2 px-8 py-1 text-xs  border-t border-b border-gray-600/10">
-                <span className="text-pinner font-bold">400 </span> Check-ins
+                <span className="text-pinner font-bold">{posts.length}</span> Check-ins
               </div>
               <div className="w-full flex flex-col justify-start items-start gap-6 py-4">
                 {posts &&
