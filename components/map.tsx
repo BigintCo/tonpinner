@@ -34,8 +34,16 @@ const markers = [
     { id: 3, position: { lat: 40.990073, lng: 29.024776 }, color: "#24A1DE" },
 ];
 
-
-const MapComponent = () => {
+interface Location {
+    lat: number;
+    lng: number;
+  }
+  
+  interface MapComponentProps {
+    location?: Location[];
+  }
+  
+  const MapComponent: React.FC<MapComponentProps> = ({ location }) => {
     const pathname = usePathname();
     const [currentPosition, setCurrentPosition] = useState<{
         lat: number;
@@ -81,18 +89,18 @@ const MapComponent = () => {
                 zoom={defaultMapZoom}
                 options={defaultMapOptions}
             >
-                {markers.map((marker) => (
+                {location && location.map((marker,index) => (
                     <Marker
                         icon={{
                             path: "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 11 7 11s7-5.75 7-11c0-3.87-3.13-7-7-7zm0 10.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z",
-                            fillColor: marker.color,
+                            fillColor: "#24A1DE",
                             fillOpacity: 1,
                             strokeWeight: 1,
                             scale: 2,
                             anchor: new google.maps.Point(12, 22), // `google.maps.Point` ile oluşturuldu
                         }}
-                        key={marker.id}
-                        position={marker.position}
+                        key={index}
+                        position={marker}
                     />
 
                 ))}

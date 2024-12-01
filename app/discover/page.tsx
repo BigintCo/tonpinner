@@ -140,7 +140,11 @@ export default function Home() {
           <div className="w-full  px-8 py-4 rounded-lg flex flex-col justify-start items-start gap-3">
             <div className="w-full">
               <MapProvider>
-                <MapComponent />
+
+                <MapComponent location={posts.map((post)=>{
+                  const place: Place = typeof post.place === "string" ? JSON.parse(post.place) : post.place;
+                  return {lat: place.geometry.location.lat, lng: place.geometry.location.lng}
+                })}/>
               </MapProvider>
             </div>
             <div className="w-full flex justify-between items-center ">
