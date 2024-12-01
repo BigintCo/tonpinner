@@ -198,6 +198,7 @@ export default function Pin() {
     };
     const pinMe = async () => {
         if (pinValidation()) {
+            setLoading(true);
             try {
                 if (selectedFile) {
                     const formData = new FormData();
@@ -231,6 +232,7 @@ export default function Pin() {
             } catch (e: any) {
                 toast(e?.response?.data?.error, { type: 'error' })
             }
+            setLoading(false);
         }
     }
     const pinValidation = () => {
@@ -416,7 +418,9 @@ export default function Pin() {
                             onClick={() => {
                                 pinMe();
                             }}
-                            className="w-full flex justify-center items-center py-2 px-4 rounded-lg border bg-pinner text-sm text-white">Pin Me</button>
+                            className="w-full flex justify-center items-center py-2 px-4 rounded-lg border bg-pinner text-sm text-white">{
+                                loading ? 'Loading...' : 'Pin'
+                            }</button>
                     </div>
                 </div>
 
