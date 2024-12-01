@@ -16,7 +16,7 @@ import pathIcon from "@/public/pinnerimages/Path.svg";
 
 import { useEffect, useState } from "react";
 import { SendTransactionRequest, TonConnectButton, useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { PinnerBadges } from "@/tact_PinnerBadges";
 import { Address, beginCell } from "@ton/core";
 import LayoutWrapper from "@/layout";
@@ -86,54 +86,22 @@ interface Place {
   vicinity: string;
 }
 export default function Home() {
+  const { slug: userTelegramId } = useParams();
+  const [tonConnectUI] = useTonConnectUI();
+  const myWallet = useTonWallet();
   const { authLogin } = useUser({});
   const { userToken, handleUserToken, user } = useAppContext();
   const [loginStatus, setLoginStatus] = useState(false);
-  const router = useRouter();
-  const places: IPlace[] = [
-    {
-      day: "24 February 2024",
-      name: "Starbucks",
-      place: "Beylikdüzü",
-      date: "24 Feb 2024 at 14:00",
-      checkedBy: "Gökhan Sansar",
-      humans: [
-        {
-          image: human,
-        },
-        {
-          image: human,
-        },
-
-      ],
-    },
-    {
-      day: "24 February 2024",
-      name: "Coffee Lab",
-      place: "Bayrampaşa",
-      date: "16 Oct 2024 at 8:00",
-      checkedBy: "Mert Tekdemir",
-      humans: [
-        {
-          image: human,
-        },
-        {
-          image: human,
-        },
-
-      ],
-    },
-  ];
   const [openModal, setOpenModal] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
-  const [section, setSection] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [posts, setPosts] = useState<IPost[]>([]);
+  
   async function getDiscoverPosts() {
     setLoading(true);
     try {
-      if (localStorage.getItem('token') && section === 0) {
-        const { data } = await ApiService.query(`/checkin`, { isOnlyPhoto: true });
+      if (localStorage.getItem('token') && userTelegramId) {
+        const { data } = await ApiService.query(`/checkin/user`, { tg_user_id: userTelegramId });
         if (data) {
           setPosts(data);
         }
@@ -141,33 +109,13 @@ export default function Home() {
         //     localStorage.removeItem('token');
         // }
       }
-       if (localStorage.getItem('token') && section === 1) {
-        const { data } = await ApiService.query(`/checkin/following`, { isOnlyPhoto: true });
-        if (data) {
-          setPosts(data);
-        }
-        // else {
-        //     localStorage.removeItem('token');
-        // }
-      }
+
     } catch (e: any) {
       // localStorage.removeItem('token');
       toast(e?.response?.data?.error, { type: 'error' })
     }
     setLoading(false);
   }
-  useEffect(() => {
-    getDiscoverPosts();
-  }, [section]);
-  useEffect(() => {
-    if (localStorage.getItem('firstPin')) {
-      setOpenModal(true);
-    }
-  }, []);
-
-  const [tonConnectUI] = useTonConnectUI();
-  const myWallet = useTonWallet();
-
   const mintNft = () => {
     const contract = PinnerBadges.fromAddress(Address.parse('EQBF-L0mnYLMPuX3MK8bnOiqxZHu-lU5MG0HT2D-Sh7GsKdw'));
     const transaction: SendTransactionRequest = {
@@ -205,6 +153,7 @@ export default function Home() {
       }
     }
   }
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -217,6 +166,14 @@ export default function Home() {
       setLoginStatus(true);
     }
   }, [userToken]);
+  useEffect(() => {
+    getDiscoverPosts();
+  }, [userTelegramId]);
+  useEffect(() => {
+    if (localStorage.getItem('firstPin')) {
+      setOpenModal(true);
+    }
+  }, []);
   return (
     <LayoutWrapper>
       {
@@ -298,18 +255,6 @@ export default function Home() {
             </div>
           </div>
           <div className="w-full h-[90vh] overflow-scroll scroll-hidden  relative flex flex-col justify-start items-start gap-2">
-            <div className="w-full grid grid-cols-12 justify-center items-center text-sm sticky top-0 z-50">
-              <div className="col-span-6">
-                <button onClick={() => { setSection(0) }} className={`${section === 0 ? 'border-[#24A1DE]' : ''} py-2 border-b   w-full flex justify-center items-center bg-white text-pinner`}>
-                  Discover
-                </button>
-              </div>
-              <div className="col-span-6">
-                <button onClick={() => { setSection(1) }} className={`${section === 1 ? 'border-[#24A1DE]' : ''} py-2 border-b  w-full flex justify-center items-center bg-white text-pinner`}>
-                  Following
-                </button>
-              </div>
-            </div>
             <div className="w-full px-8 py-4 rounded-lg flex flex-col justify-start items-start gap-3">
               <div className="w-full">
                 <MapProvider>

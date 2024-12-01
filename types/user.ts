@@ -6,6 +6,7 @@ export type ISocialLink = {
 
 export type IUser = {
   _id: string,
+  id: string,
   firstName: string,
   lastName: string,
   photoUrl: string,
