@@ -109,7 +109,7 @@ export default function Home() {
           }
         </div>
         <div className="w-full flex justify-between items-end px-8 py-2 relative border-t border-[#24A1DE]/30">
-            <Link href={'/discover'} className="w-7 aspect-auto">
+            <Link href={'/'} className="w-7 aspect-auto">
               <Image alt="icon" src={search} className="w-full aspect-square"></Image>
             </Link>
             <Link href={'/pin'} className="w-10 flex justify-center items-center aspect-auto rounded-full p-2 shadow-md absolute left-1/2 -translate-x-1/2 -top-1/2 bg-white">

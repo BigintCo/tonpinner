@@ -141,8 +141,8 @@ export default function Home() {
         //     localStorage.removeItem('token');
         // }
       }
-      if (localStorage.getItem('token') && section === 1) {
-        const { data } = await ApiService.query(`/checkin`, { isOnlyPhoto: true });
+       if (localStorage.getItem('token') && section === 1) {
+        const { data } = await ApiService.query(`/checkin/following`, { isOnlyPhoto: true });
         if (data) {
           setPosts(data);
         }
@@ -333,13 +333,6 @@ export default function Home() {
               {/* <div className="w-full flex justify-start items-center gap-2 px-8 py-1 text-xs  border-t border-b border-gray-600/10">
               <span className="text-pinner font-bold">400 </span> Check-ins
             </div> */}
-              <button onClick={() => router.push('/premium')} className="w-full flex justify-center items-center gap-2 p-2 text-pinner border border-blue-500/50 rounded-3xl">
-                <Image alt="diamond" src={diamond} className="w-8 aspect-square"></Image>
-                Get Premium
-              </button>
-              <div className="w-full flex justify-start items-center gap-2 px-8 py-1 text-xs  border-t border-b border-gray-600/10">
-                <span className="text-pinner font-bold">400 </span> Check-ins
-              </div>
               <div className="w-full flex flex-col justify-start items-start gap-6 py-4">
                 {posts &&
                   posts.map((post, index) => {

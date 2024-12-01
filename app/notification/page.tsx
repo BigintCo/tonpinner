@@ -47,7 +47,7 @@ export default function Home() {
           </div>
         </div>
         <div className="w-full flex justify-between gap-10 items-end px-16 py-3 relative border-t border-[#24A1DE]/30">
-          <Link href={'/discover'} className="w-7 aspect-auto flex flex-col justify-center items-center gap-1">
+          <Link href={'/'} className="w-7 aspect-auto flex flex-col justify-center items-center gap-1">
             <Image alt="icon" src={discover} className="w-full aspect-square"></Image>
             <span className="text-xs text-gray-700">Discover</span>
           </Link>
