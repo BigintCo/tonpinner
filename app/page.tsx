@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { useUser } from "@/hooks/user-hook";
 import { toast } from "react-toastify";
 import { useAppContext } from "@/providers/app-provider";
+import ApiService from "@/utils/api-service";
 type IPlace = {
   day: string;
   name: string;
@@ -36,6 +37,54 @@ type IPlace = {
   location?: { lat: number; lng: number };
   humans: { image: StaticImageData }[];
 };
+type IPost = {
+  content: string;
+  photoURI: string;
+  place: string;
+}
+interface Place {
+  business_status: string;
+  geometry: {
+    location: {
+      lat: number;
+      lng: number;
+    };
+    viewport: {
+      northeast: {
+        lat: number;
+        lng: number;
+      };
+      southwest: {
+        lat: number;
+        lng: number;
+      };
+    };
+  };
+  icon: string;
+  icon_background_color: string;
+  icon_mask_base_uri: string;
+  name: string;
+  opening_hours?: {
+    open_now: boolean;
+  };
+  photos?: {
+    height: number;
+    html_attributions: string[];
+    photo_reference: string;
+    width: number;
+  }[];
+  place_id: string;
+  plus_code?: {
+    compound_code: string;
+    global_code: string;
+  };
+  rating?: number;
+  reference: string;
+  scope: string;
+  types: string[];
+  user_ratings_total?: number;
+  vicinity: string;
+}
 export default function Home() {
   const { authLogin } = useUser({});
   const { userToken, handleUserToken, user } = useAppContext();
@@ -77,6 +126,39 @@ export default function Home() {
   ];
   const [openModal, setOpenModal] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
+  const [section, setSection] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [posts, setPosts] = useState<IPost[]>([]);
+  async function getDiscoverPosts() {
+    setLoading(true);
+    try {
+      if (localStorage.getItem('token') && section === 0) {
+        const { data } = await ApiService.query(`/checkin`, { isOnlyPhoto: true });
+        if (data) {
+          setPosts(data);
+        }
+        // else {
+        //     localStorage.removeItem('token');
+        // }
+      }
+       if (localStorage.getItem('token') && section === 1) {
+        const { data } = await ApiService.query(`/checkin/following`, { isOnlyPhoto: true });
+        if (data) {
+          setPosts(data);
+        }
+        // else {
+        //     localStorage.removeItem('token');
+        // }
+      }
+    } catch (e: any) {
+      // localStorage.removeItem('token');
+      toast(e?.response?.data?.error, { type: 'error' })
+    }
+    setLoading(false);
+  }
+  useEffect(() => {
+    getDiscoverPosts();
+  }, [section]);
   useEffect(() => {
     if (localStorage.getItem('firstPin')) {
       setOpenModal(true);
@@ -166,8 +248,8 @@ export default function Home() {
             openModal &&
             <div className="absolute top-0 left-0 w-screen h-screen bg-black/30 z-50 px-8 flex justify-center items-center">
               <div className="w-full flex justify-between items-start gap-5 bg-white rounded-xl p-4 relative">
-                <div className="w-8 flex justify-center items-center absolute right-2 top-4 aspect-square rounded-full p-1 bg-pinner text-white" onClick={()=>{localStorage.removeItem('firstPin'); setOpenModal(false)}}>X</div>
-              
+                <div className="w-8 flex justify-center items-center absolute right-2 top-4 aspect-square rounded-full p-1 bg-pinner text-white" onClick={() => { localStorage.removeItem('firstPin'); setOpenModal(false) }}>X</div>
+
                 <Image alt="hug" src={hug} className="w-12 aspect-square"></Image>
                 <div className="w-full flex flex-col justify-start items-start gap-2">
                   <div className="w-full flex flex-col justify-start items-start gap-1">
@@ -215,61 +297,81 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="w-full  px-8 py-4 rounded-lg flex flex-col justify-start items-start gap-3">
-            <div className="w-full">
-              <MapProvider>
-                <MapComponent />
-              </MapProvider>
+          <div className="w-full h-[90vh] overflow-scroll scroll-hidden  relative flex flex-col justify-start items-start gap-2">
+            <div className="w-full grid grid-cols-12 justify-center items-center text-sm sticky top-0 z-50">
+              <div className="col-span-6">
+                <button onClick={() => { setSection(0) }} className={`${section === 0 ? 'border-[#24A1DE]' : ''} py-2 border-b   w-full flex justify-center items-center bg-white text-pinner`}>
+                  Discover
+                </button>
+              </div>
+              <div className="col-span-6">
+                <button onClick={() => { setSection(1) }} className={`${section === 1 ? 'border-[#24A1DE]' : ''} py-2 border-b  w-full flex justify-center items-center bg-white text-pinner`}>
+                  Following
+                </button>
+              </div>
             </div>
-            <div className="w-full flex justify-between items-center ">
-              <button className="rounded-full bg-[#24A1DE] p-2 flex justify-center items-center text-xs text-white">
-                282 visited
-              </button>
-              <button className="rounded-full bg-[#24A1DE] p-2 flex justify-center items-center text-xs text-white">
-                0 saved
-              </button>
-              <button className="rounded-full bg-[#24A1DE] p-2 flex justify-center items-center text-xs text-white">
-                36/100 Categories
-              </button>
-            </div>
-            <button onClick={() => router.push('/premium')} className="w-full flex justify-center items-center gap-2 p-2 text-pinner border border-blue-500/50 rounded-3xl">
-              <Image alt="diamond" src={diamond} className="w-8 aspect-square"></Image>
-              Get Premium
-            </button>
-            <div className="w-full flex justify-start items-center gap-2 px-8 py-1 text-xs  border-t border-b border-gray-600/10">
+            <div className="w-full px-8 py-4 rounded-lg flex flex-col justify-start items-start gap-3">
+              <div className="w-full">
+                <MapProvider>
+                  <MapComponent location={posts.map((post) => {
+                    const place: Place = typeof post.place === "string" ? JSON.parse(post.place) : post.place;
+                    return { lat: place.geometry.location.lat, lng: place.geometry.location.lng }
+                  })} />
+                </MapProvider>
+              </div>
+              <div className="w-full flex justify-between items-center ">
+                <button className="rounded-full bg-[#24A1DE] p-2 flex justify-center items-center text-xs text-white">
+                  282 visited
+                </button>
+                <button className="rounded-full bg-[#24A1DE] p-2 flex justify-center items-center text-xs text-white">
+                  0 saved
+                </button>
+                <button className="rounded-full bg-[#24A1DE] p-2 flex justify-center items-center text-xs text-white">
+                  36/100 Categories
+                </button>
+              </div>
+              {/* <div className="w-full flex justify-start items-center gap-2 px-8 py-1 text-xs  border-t border-b border-gray-600/10">
               <span className="text-pinner font-bold">400 </span> Check-ins
-            </div>
-          </div>
-          <div className="w-full flex flex-col justify-start items-start gap-5 px-8 py-4 overflow-scroll scroll-hidden h-[60vh]">
-            {
-              places.map((place, index) => (
-                <div key={index} className="w-full flex flex-col justify-start items-start gap-5">
-                  <div className="text-sm bg-blue-600/10 p-2 rounded-xl text-blue-500">{place.date}</div>
-                  <div className="w-full flex justify-start items-start gap-5">
-                    <div className="rounded-full bg-pinner p-3 flex justify-center items-center">
-                      <Image alt="icon" src={coffee} className=""></Image>
-                    </div>
-                    <div className="flex flex-col justify-start items-start gap-2">
-                      <span className="text-sm font-medium">{place.name}</span>
-                      <div className="flex flex-col justify-start items-start gap-1">
-                        <span className="text-xs text-gray-400">{place.place}</span>
-                        <span className="text-xs text-gray-400">{place.date}</span>
-                      </div>
-                      <span className="text-xs text-gray-400 flex justify-start items-center gap-1">Checked by <span className="text-pinner">{place.checkedBy}</span></span>
-                      <div className="w-full flex justify-start items-center gap-1">
-                        {
-                          place.humans.map((human, index) => (
-                            <div key={index} className="w-10 aspect-square rounded-full border-2 border-white">
-                              <Image alt="pp" src={human.image} className="w-full aspect-square rounded-full" />
+            </div> */}
+              <div className="w-full flex flex-col justify-start items-start gap-6 py-4">
+                {posts &&
+                  posts.map((post, index) => {
+                    const place: Place = typeof post.place === "string" ? JSON.parse(post.place) : post.place;
+                    return (
+
+                      <div key={index} className="w-full flex flex-col justify-start items-start gap-4">
+                        <div className="text-sm bg-blue-600/10 p-2 rounded-xl text-blue-500">Today</div>
+                        <div className="w-full flex justify-start items-start gap-5">
+                          <div className="w-[15%] rounded-full bg-pinner p-3 flex justify-center items-center">
+                            <Image src={place.icon} alt="" width={20} height={20} className="w-5 h-5" />
+                          </div>
+                          <div className="w-[85%] flex flex-col justify-start items-start gap-2">
+                            <span className="text-sm font-medium">{place.name}</span>
+                            <div className="w-full">
+                              <img src={post.photoURI} className="object-contain" alt=""></img>
                             </div>
-                          ))
-                        }
+                            <div className="flex flex-col justify-start items-start gap-1">
+                              <span className="text-xs text-gray-400">Today</span>
+                            </div>
+                            <span className="text-xs text-gray-400 flex justify-start items-center gap-1">Checked by <span className="text-pinner">Today</span></span>
+                            {/* <div className="w-full flex justify-start items-center gap-1">
+                          {
+                            place.humans.map((human, index) => (
+                              <div key={index} className="w-10 aspect-square rounded-full border-2 border-white">
+                                <Image alt="pp" src={human.image} className="w-full aspect-square rounded-full" />
+                              </div>
+                            ))
+                          }
+                        </div> */}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              ))
-            }
+                    )
+
+                  })
+                }
+              </div>
+            </div>
           </div>
           <div className="w-full flex justify-between gap-10 items-end px-16 py-3 relative border-t border-[#24A1DE]/30">
             <Link href={'/discover'} className="w-7 aspect-auto flex flex-col justify-center items-center gap-1">
