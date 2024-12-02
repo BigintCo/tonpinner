@@ -100,13 +100,13 @@ export default function Home() {
     setLoading(true);
     try {
       if (localStorage.getItem('token') && section === 0) {
-        const { data } = await ApiService.query(`/checkin`, { isOnlyPhoto: true });
+        const { data } = await ApiService.get(`/checkin`);
         if (data) {
           setPosts(data);
         }
       }
       if (localStorage.getItem('token') && section === 1) {
-        const { data } = await ApiService.query(`/checkin`, { isOnlyPhoto: true });
+        const { data } = await ApiService.get(`/checkin/followings`);
         if (data) {
           setPosts(data);
         }
@@ -142,7 +142,6 @@ export default function Home() {
       });
     }
   }
-
   const mintNft = () => {
     const contract = PinnerBadges.fromAddress(Address.parse('EQBF-L0mnYLMPuX3MK8bnOiqxZHu-lU5MG0HT2D-Sh7GsKdw'));
     const transaction: SendTransactionRequest = {

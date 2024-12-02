@@ -327,7 +327,7 @@ export default function Home() {
                   <img src={posts.length > 0 && posts[0].user.photoUrl ? posts[0].user.photoUrl : ''} className="w-12 aspect-square rounded-full" alt="" />
                   <div className="w-full flex flex-col justify-start items-start gap-1">
                     <span className="text-xs font-semibold">{posts.length > 0 && posts[0].user.firstName} {posts.length > 0 && posts[0].user.lastName}</span>
-                    <div className="w-full flex justify-start items-center gap-5 text-xs">
+                    <div className="w-full flex justify-start items-center gap-3 text-xs">
                       <div className="flex justify-start items-center gap-2">
                         <span className="text-gray-400">Followers</span>
                         <span className="text-gray-600">{posts.length > 0 && posts[0].user.followers ? posts[0].user.followers.length : 0}</span>
@@ -338,14 +338,13 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-
                   {
                     !followLoading && (userId && userId.toString() !== userTelegramId.toString()) &&
                     <button onClick={() => { posts.length > 0 && followUser(posts[0].user.id) }} className={`bg-pinner w-24 p-2 rounded-lg text-white text-xs ${followers.includes(user.id) ? 'hidden' : 'block'}`}>Follow</button>
                   }
                   {
                     !followLoading && (userId && userId.toString() !== userTelegramId.toString()) &&
-                  <button onClick={() => { posts.length > 0 && followUser(posts[0].user.id) }} className={`bg-white w-24 p-2 rounded-lg text-pinner border border-blue-400/30 text-xs ${!followers.includes(user.id) ? 'hidden' : 'block'}`}>Unfollow</button>
+                    <button onClick={() => { posts.length > 0 && followUser(posts[0].user.id) }} className={`bg-white w-24 p-2 rounded-lg text-pinner border border-blue-400/30 text-xs ${!followers.includes(user.id) ? 'hidden' : 'block'}`}>Unfollow</button>
                   }
                   {
                     followLoading && (userId && userId.toString() !== userTelegramId.toString()) &&
