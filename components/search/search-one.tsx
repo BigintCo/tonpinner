@@ -68,10 +68,8 @@ export default function SearchOne() {
                     onBlur={() => setIsActive(false)}
                 />
             </label>
-            <div
-                className={`absolute w-full mt-2 bg-white top-full rounded-lg right-1/2 translate-x-1/2 transition-all duration-300 ${isActive ? 'translate-y-0' : 'translate-y-4 opacity-0 invisible'}`}>
-                <div
-                    className={`border border-gray-400 border-opacity-30  p-2 lg:p-4 rounded-lg app-shadow-xs`}>
+            <div className={`absolute w-full mt-2 bg-white top-full rounded-lg right-1/2 translate-x-1/2 transition-all duration-300 ${isActive ? 'translate-y-0' : 'translate-y-4 opacity-0 invisible'}`}>
+                <div className={`border border-gray-400 border-opacity-30 p-2 lg:p-4 rounded-lg app-shadow-xs`}>
                     <div className="w-full">
                         {
                             searchUsers?.map((item, index) => (
@@ -84,12 +82,19 @@ export default function SearchOne() {
                                         />
                                     </div>
                                     <div className="flex-1">
-                                        <span className="sm:text-sm text-xs font-bold">
+                                        <span className="sm:text-sm text-xs font-medium">
                                             {item.firstName + ' ' + item.lastName}
                                         </span>
                                     </div>
                                 </Link>
                             ))
+                        }
+                        {
+                            searchUsers.length === 0 && (
+                                <div className="w-full text-center text-xs text-gray-500">
+                                    No result found
+                                </div>
+                            )
                         }
                     </div>
                 </div>
