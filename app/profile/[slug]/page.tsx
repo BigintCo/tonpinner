@@ -32,7 +32,7 @@ import { useAppContext } from "@/providers/app-provider";
 import ApiService from "@/utils/api-service";
 import { IUser } from "@/types/user";
 import SearchOne from "@/components/search/search-one";
- 
+
 export type IPost = {
   _id: string;
   content: string;
@@ -102,6 +102,7 @@ export default function Home() {
   const [followers, setFollowers] = useState<string[]>([]);
   const [userId, setUserId] = useState<string>('');
   const [followLoading, setFollowLoading] = useState<boolean>(false);
+  const [userInfo, setUserInfo] = useState<IUser>();
 
   async function getDiscoverPosts() {
     setLoading(true);
@@ -110,6 +111,20 @@ export default function Home() {
         const { data } = await ApiService.query(`/checkin/user`, { tg_user_id: userTelegramId });
         if (data) {
           setPosts(data);
+        }
+      }
+    } catch (e: any) {
+      toast(e?.response?.data?.error, { type: 'error' })
+    }
+    setLoading(false);
+  }
+  async function getUserById() {
+    setLoading(true);
+    try {
+      if (localStorage.getItem('token') && userTelegramId) {
+        const { data } = await ApiService.query(`/users/one`, { tg_user_id: userTelegramId });
+        if (data) {
+          setUserInfo(data);
         }
       }
     } catch (e: any) {
@@ -175,7 +190,7 @@ export default function Home() {
   }, [userToken]);
   useEffect(() => {
     getDiscoverPosts();
-    console.log('userTelegramId', userTelegramId);
+    getUserById();
   }, [userTelegramId]);
   useEffect(() => {
     if (localStorage.getItem('firstPin')) {
@@ -231,16 +246,16 @@ export default function Home() {
         else {
           setLikedPosts((prevLikedPosts) => prevLikedPosts.filter((id) => id !== element._id));
         }
-        if (element.user.followers && element.user.followers.includes(user.id)) {
-          setFollowers((prevFollowers) => [...prevFollowers, user.id]);
-        }
-        else {
-          setFollowers((prevFollowers) => prevFollowers.filter((id) => id !== user.id));
-        }
-
+        
       }
     }
-  }, [posts]);
+    if (userInfo && userInfo.followers && userInfo.followers.includes(user.id)) {
+      setFollowers((prevFollowers) => [...prevFollowers, user.id]);
+    }
+    else {
+      setFollowers((prevFollowers) => prevFollowers.filter((id) => id !== user.id));
+    }
+  }, [userInfo, posts]);
   return (
     <LayoutWrapper>
       {
@@ -304,11 +319,11 @@ export default function Home() {
             <div className="w-full flex justify-between items-center gap-4">
               {
                 user?.photoUrl ?
-                  <div onClick={()=>{router.push('/profile/' + user.id)}} className="w-8 aspect-square rounded-full border-2 border-white">
+                  <div onClick={() => { router.push('/profile/' + user.id) }} className="w-8 aspect-square rounded-full border-2 border-white">
                     <Image alt="pp" src={user?.photoUrl} width={25} height={25} className="w-full aspect-square rounded-full" />
                   </div>
                   :
-                  <div onClick={()=>{router.push('/profile/' + user.id)}} className="w-8 aspect-square rounded-full border-2 border-white">
+                  <div onClick={() => { router.push('/profile/' + user.id) }} className="w-8 aspect-square rounded-full border-2 border-white">
                     <Image alt="pp" src={human} className="w-14 aspect-square rounded-full" />
                   </div>
               }
@@ -322,27 +337,27 @@ export default function Home() {
             <div className="w-full px-8 py-4 rounded-lg flex flex-col justify-start items-start gap-3">
               <div className="w-full flex flex-col justify-start items-start gap-5">
                 <div className="w-full flex justify-between items-center gap-2">
-                  <img src={posts.length > 0 && posts[0].user.photoUrl ? posts[0].user.photoUrl : ''} className="w-12 aspect-square rounded-full" alt="" />
+                  <img src={userInfo && userInfo.photoUrl} className="w-12 aspect-square rounded-full" alt="" />
                   <div className="w-full flex flex-col justify-start items-start gap-1">
-                    <span className="text-xs font-semibold">{posts.length > 0 && posts[0].user.firstName} {posts.length > 0 && posts[0].user.lastName}</span>
+                    <span className="text-xs font-semibold">{userInfo && userInfo.firstName} {userInfo && userInfo.lastName}</span>
                     <div className="w-full flex justify-start items-center gap-3 text-xs">
                       <div className="flex justify-start items-center gap-2">
                         <span className="text-gray-400">Followers</span>
-                        <span className="text-gray-600">{posts.length > 0 && posts[0].user.followers ? posts[0].user.followers.length : 0}</span>
+                        <span className="text-gray-600">{userInfo && userInfo.followers ? userInfo.followers.length : 0}</span>
                       </div>
                       <div className="flex justify-start items-center gap-2">
                         <span className="text-gray-400">Followings</span>
-                        <span className="text-gray-600">{posts.length > 0 && posts[0].user.followings ? posts[0].user.followings.length : 0}</span>
+                        <span className="text-gray-600">{userInfo && userInfo.followings ? userInfo.followings.length : 0}</span>
                       </div>
                     </div>
                   </div>
                   {
                     !followLoading && (userId && userId.toString() !== userTelegramId.toString()) &&
-                    <button onClick={() => { posts.length > 0 && followUser(posts[0].user.id) }} className={`bg-pinner w-24 p-2 rounded-lg text-white text-xs ${followers.includes(user.id) ? 'hidden' : 'block'}`}>Follow</button>
+                    <button onClick={() => { userInfo && followUser(userInfo.id) }} className={`bg-pinner w-24 p-2 rounded-lg text-white text-xs ${followers.includes(user.id) ? 'hidden' : 'block'}`}>Follow</button>
                   }
                   {
                     !followLoading && (userId && userId.toString() !== userTelegramId.toString()) &&
-                    <button onClick={() => { posts.length > 0 && followUser(posts[0].user.id) }} className={`bg-white w-24 p-2 rounded-lg text-pinner border border-blue-400/30 text-xs ${!followers.includes(user.id) ? 'hidden' : 'block'}`}>Unfollow</button>
+                    <button onClick={() => { userInfo && followUser(userInfo.id) }} className={`bg-white w-24 p-2 rounded-lg text-pinner border border-blue-400/30 text-xs ${!followers.includes(user.id) ? 'hidden' : 'block'}`}>Unfollow</button>
                   }
                   {
                     followLoading && (userId && userId.toString() !== userTelegramId.toString()) &&
