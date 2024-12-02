@@ -27,22 +27,16 @@ import { useUser } from "@/hooks/user-hook";
 import { toast } from "react-toastify";
 import { useAppContext } from "@/providers/app-provider";
 import ApiService from "@/utils/api-service";
+import { IUser } from "@/types/user";
 
-type IPlace = {
-  day: string;
-  name: string;
-  place: string;
-  date: string;
-  checkedBy: string;
-  location?: { lat: number; lng: number };
-  humans: { image: StaticImageData }[];
-};
 type IPost = {
   _id: string;
   content: string;
   photoURI: string;
   place: string;
   likers?: string[];
+  user: IUser;
+  checkin_date: string;
 }
 interface Place {
   business_status: string;
@@ -110,21 +104,14 @@ export default function Home() {
         if (data) {
           setPosts(data);
         }
-        // else {
-        //     localStorage.removeItem('token');
-        // }
       }
       if (localStorage.getItem('token') && section === 1) {
         const { data } = await ApiService.query(`/checkin`, { isOnlyPhoto: true });
         if (data) {
           setPosts(data);
         }
-        // else {
-        //     localStorage.removeItem('token');
-        // }
       }
     } catch (e: any) {
-      // localStorage.removeItem('token');
       toast(e?.response?.data?.error, { type: 'error' })
     }
     setLoading(false);
@@ -342,20 +329,29 @@ export default function Home() {
                     const place: Place = typeof post.place === "string" ? JSON.parse(post.place) : post.place;
                     return (
                       <div key={index} className="w-full flex flex-col justify-start items-start gap-4">
-                        <div className="text-sm bg-blue-600/10 p-2 rounded-xl text-blue-500">Today</div>
+                        <div className="text-sm bg-blue-600/10 p-2 rounded-xl text-blue-500">
+                          {
+                            new Date(post.checkin_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+                          }
+                        </div>
                         <div className="w-full flex justify-start items-start gap-5">
-                          <div className="w-[15%] rounded-full bg-pinner p-3 flex justify-center items-center">
-                            <Image src={place.icon} alt="" width={20} height={20} className="w-5 h-5" />
+                          <div className="w-[10%] rounded-full bg-pinner flex justify-center items-center">
+                            <img src={post.user.photoUrl} alt="" className="w-full aspect-square rounded-full" />
                           </div>
-                          <div className="w-[85%] flex flex-col justify-start items-start gap-2">
+                          <div className="w-[90%] flex flex-col justify-start items-start gap-2">
                             <span className="text-sm font-medium">{place.name}</span>
                             <div className="w-full">
-                              <img src={post.photoURI} className="object-contain" alt=""></img>
+                              <img src={post.photoURI} className="object-contain rounded-lg" alt=""></img>
                             </div>
                             <div className="w-full flex justify-between items-center">
                               <div className="flex flex-col justify-start items-start gap-1">
-                                <span className="text-xs text-gray-400">Today</span>
-                                <span className="text-xs text-gray-400 flex justify-start items-center gap-1">Checked by <span className="text-pinner">Today</span></span>
+                                <span className="text-xs text-gray-400">{
+                                  new Date(post.checkin_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+                                }</span>
+                                <span onClick={() => { router.push('/profile/' + post.user.id) }} className="text-xs text-gray-400 flex justify-start items-center gap-1">
+                                  Checked by
+                                  <span className="text-pinner"> {post.user.firstName} {post.user.lastName} </span>
+                                </span>
                               </div>
                               <div className="w-6 aspect-square rounded-full border-2 border-white">
                                 <Image alt="heart-none" onClick={() => { likeCheckIn(post._id) }} src={heartNone} className={`${!likedPosts.includes(post._id) ? 'block' : 'hidden'} w-full aspect-square rounded-full`} />

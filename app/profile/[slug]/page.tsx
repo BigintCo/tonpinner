@@ -2,7 +2,8 @@
 import Image, { StaticImageData } from "next/image";
 import human from "@/public/pinnerimages/human.png";
 import search from "@/public/images/search.svg";
-import coffee from "@/public/pinnerimages/coffee.svg";
+import heartNone from "@/public/pinnerimages/heart-none.svg";
+import heart from "@/public/pinnerimages/heart.webp";
 import Link from "next/link";
 import notificationIcon from "@/public/pinnerimages/bell.svg";
 import discover from "@/public/pinnerimages/discover.svg";
@@ -28,19 +29,15 @@ import { useUser } from "@/hooks/user-hook";
 import { toast } from "react-toastify";
 import { useAppContext } from "@/providers/app-provider";
 import ApiService from "@/utils/api-service";
-type IPlace = {
-  day: string;
-  name: string;
-  place: string;
-  date: string;
-  checkedBy: string;
-  location?: { lat: number; lng: number };
-  humans: { image: StaticImageData }[];
-};
+import { IUser } from "@/types/user";
 type IPost = {
+  _id: string;
   content: string;
   photoURI: string;
   place: string;
+  likers?: string[];
+  user: IUser;
+  checkin_date: string;
 }
 interface Place {
   business_status: string;
@@ -97,7 +94,8 @@ export default function Home() {
   const [openMenu, setOpenMenu] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [posts, setPosts] = useState<IPost[]>([]);
-  
+  const [likedPosts, setLikedPosts] = useState<string[]>([]);
+
   async function getDiscoverPosts() {
     setLoading(true);
     try {
@@ -175,6 +173,37 @@ export default function Home() {
       setOpenModal(true);
     }
   }, []);
+  const likeCheckIn = async (postId: string) => {
+    try {
+      const data = await ApiService.post(`/checkin/like`, { post_id: postId });
+      if (data) {
+        if (likedPosts.includes(postId)) {
+          setLikedPosts((prevLikedPosts) =>
+            prevLikedPosts.filter((id) => id !== postId)
+          );
+        } else {
+          setLikedPosts((prevLikedPosts) => [...prevLikedPosts, postId]);
+        }
+      }
+    } catch (error: any) {
+      toast(error.message || "An error occurred while updating like status", {
+        type: "error",
+      });
+    }
+  }
+  useEffect(() => {
+    if (posts.length > 0) {
+      for (let index = 0; index < posts.length; index++) {
+        const element = posts[index];
+        if (element.likers && element.likers.includes(user.id)) {
+          setLikedPosts((prevLikedPosts) => [...prevLikedPosts, element._id]);
+        }
+        else {
+          setLikedPosts((prevLikedPosts) => prevLikedPosts.filter((id) => id !== element._id));
+        }
+      }
+    }
+  }, [posts]);
   return (
     <LayoutWrapper>
       {
@@ -287,29 +316,39 @@ export default function Home() {
                     return (
 
                       <div key={index} className="w-full flex flex-col justify-start items-start gap-4">
-                        <div className="text-sm bg-blue-600/10 p-2 rounded-xl text-blue-500">Today</div>
+                        <div className="text-sm bg-blue-600/10 p-2 rounded-xl text-blue-500">
+                          {
+                            new Date(post.checkin_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+                          }
+                        </div>
                         <div className="w-full flex justify-start items-start gap-5">
-                          <div className="w-[15%] rounded-full bg-pinner p-3 flex justify-center items-center">
-                            <Image src={place.icon} alt="" width={20} height={20} className="w-5 h-5" />
+                          <div className="w-[10%] rounded-full bg-pinner flex justify-center items-center">
+                            <img src={post.user.photoUrl} alt="" className="w-full aspect-square rounded-full" />
                           </div>
-                          <div className="w-[85%] flex flex-col justify-start items-start gap-2">
+                          <div className="w-[90%] flex flex-col justify-start items-start gap-2">
                             <span className="text-sm font-medium">{place.name}</span>
                             <div className="w-full">
                               <img src={post.photoURI} className="object-contain" alt=""></img>
                             </div>
-                            <div className="flex flex-col justify-start items-start gap-1">
-                              <span className="text-xs text-gray-400">Today</span>
-                            </div>
-                            <span className="text-xs text-gray-400 flex justify-start items-center gap-1">Checked by <span className="text-pinner">Today</span></span>
-                            {/* <div className="w-full flex justify-start items-center gap-1">
-                          {
-                            place.humans.map((human, index) => (
-                              <div key={index} className="w-10 aspect-square rounded-full border-2 border-white">
-                                <Image alt="pp" src={human.image} className="w-full aspect-square rounded-full" />
+                            <div className="w-full flex justify-between items-center">
+                              <div className="w-full flex flex-col justify-start items-start gap-2">
+                                <span className="text-xs text-gray-400">
+                                  {
+                                    new Date(post.checkin_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+                                  }
+                                </span>
+                                <span className="text-xs text-gray-400 flex justify-start items-center gap-1">
+                                  Checked by
+                                  <span className="text-pinner">
+                                    {post.user.firstName} {post.user.lastName}
+                                  </span>
+                                </span>
                               </div>
-                            ))
-                          }
-                        </div> */}
+                              <div className="w-6 aspect-square rounded-full border-2 border-white">
+                                <Image alt="heart-none" onClick={() => { likeCheckIn(post._id) }} src={heartNone} className={`${!likedPosts.includes(post._id) ? 'block' : 'hidden'} w-full aspect-square rounded-full`} />
+                                <Image alt="heart" onClick={() => { likeCheckIn(post._id) }} src={heart} className={`${likedPosts.includes(post._id) ? 'block' : 'hidden'} w-full aspect-square rounded-full`} />
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
