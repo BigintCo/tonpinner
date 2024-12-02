@@ -198,8 +198,8 @@ export default function Pin() {
     };
     const pinMe = async () => {
         if (pinValidation()) {
-            setLoading(true);
             try {
+                setLoading(true);
                 if (selectedFile) {
                     const formData = new FormData();
                     formData.append('content', content);

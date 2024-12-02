@@ -2,7 +2,8 @@
 import Image, { StaticImageData } from "next/image";
 import human from "@/public/pinnerimages/human.png";
 import search from "@/public/images/search.svg";
-import coffee from "@/public/pinnerimages/coffee.svg";
+import heartNone from "@/public/pinnerimages/heart-none.svg";
+import heart from "@/public/pinnerimages/heart.webp";
 import Link from "next/link";
 import notificationIcon from "@/public/pinnerimages/bell.svg";
 import discover from "@/public/pinnerimages/discover.svg";
@@ -13,7 +14,6 @@ import wallet from "@/public/pinnerimages/wallet-svgrepo-com.svg";
 import logo from "@/public/pinnerimages/tonpinner-logo.svg";
 import pathIcon from "@/public/pinnerimages/Path.svg";
 
-
 import { useEffect, useState } from "react";
 import { SendTransactionRequest, TonConnectButton, useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
 import { useRouter } from "next/navigation";
@@ -22,12 +22,12 @@ import { Address, beginCell } from "@ton/core";
 import LayoutWrapper from "@/layout";
 import { MapProvider } from "@/providers/MapProvider";
 import { MapComponent } from "@/components/map";
-import { log } from "console";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/hooks/user-hook";
 import { toast } from "react-toastify";
 import { useAppContext } from "@/providers/app-provider";
 import ApiService from "@/utils/api-service";
+
 type IPlace = {
   day: string;
   name: string;
@@ -85,50 +85,20 @@ interface Place {
   user_ratings_total?: number;
   vicinity: string;
 }
+
 export default function Home() {
   const { authLogin } = useUser({});
   const { userToken, handleUserToken, user } = useAppContext();
   const [loginStatus, setLoginStatus] = useState(false);
   const router = useRouter();
-  const places: IPlace[] = [
-    {
-      day: "24 February 2024",
-      name: "Starbucks",
-      place: "Beylikdüzü",
-      date: "24 Feb 2024 at 14:00",
-      checkedBy: "Gökhan Sansar",
-      humans: [
-        {
-          image: human,
-        },
-        {
-          image: human,
-        },
 
-      ],
-    },
-    {
-      day: "24 February 2024",
-      name: "Coffee Lab",
-      place: "Bayrampaşa",
-      date: "16 Oct 2024 at 8:00",
-      checkedBy: "Mert Tekdemir",
-      humans: [
-        {
-          image: human,
-        },
-        {
-          image: human,
-        },
-
-      ],
-    },
-  ];
   const [openModal, setOpenModal] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const [section, setSection] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [posts, setPosts] = useState<IPost[]>([]);
+  const [tonConnectUI] = useTonConnectUI();
+  const myWallet = useTonWallet();
   async function getDiscoverPosts() {
     setLoading(true);
     try {
@@ -165,8 +135,7 @@ export default function Home() {
     }
   }, []);
 
-  const [tonConnectUI] = useTonConnectUI();
-  const myWallet = useTonWallet();
+
 
   const mintNft = () => {
     const contract = PinnerBadges.fromAddress(Address.parse('EQBF-L0mnYLMPuX3MK8bnOiqxZHu-lU5MG0HT2D-Sh7GsKdw'));
@@ -280,11 +249,11 @@ export default function Home() {
             <div className="w-full flex justify-between items-center gap-4">
               {
                 user?.photoUrl ?
-                  <div onClick={()=>{router.push('/profile/' + user.id)}} className="w-14 aspect-square rounded-full border-2 border-white">
+                  <div onClick={() => { router.push('/profile/' + user.id) }} className="w-14 aspect-square rounded-full border-2 border-white">
                     <Image alt="pp" src={user?.photoUrl} width={56} height={56} className="w-full aspect-square rounded-full" />
                   </div>
                   :
-                  <div onClick={()=>{router.push('/profile/' + user.id)}} className="w-14 aspect-square rounded-full border-2 border-white">
+                  <div onClick={() => { router.push('/profile/' + user.id) }} className="w-14 aspect-square rounded-full border-2 border-white">
                     <Image alt="pp" src={human} className="w-14 aspect-square rounded-full" />
                   </div>
               }
@@ -321,7 +290,7 @@ export default function Home() {
               </div>
               <div className="w-full flex justify-between items-center ">
                 <button className="rounded-full bg-[#24A1DE] p-2 flex justify-center items-center text-xs text-white">
-                  282 visited
+                  {posts.length} Check-ins
                 </button>
                 <button className="rounded-full bg-[#24A1DE] p-2 flex justify-center items-center text-xs text-white">
                   0 saved
@@ -330,22 +299,16 @@ export default function Home() {
                   36/100 Categories
                 </button>
               </div>
-              {/* <div className="w-full flex justify-start items-center gap-2 px-8 py-1 text-xs  border-t border-b border-gray-600/10">
-              <span className="text-pinner font-bold">400 </span> Check-ins
-            </div> */}
               <button onClick={() => router.push('/premium')} className="w-full flex justify-center items-center gap-2 p-2 text-pinner border border-blue-500/50 rounded-3xl">
                 <Image alt="diamond" src={diamond} className="w-8 aspect-square"></Image>
                 Get Premium
               </button>
-              <div className="w-full flex justify-start items-center gap-2 px-8 py-1 text-xs  border-t border-b border-gray-600/10">
-                <span className="text-pinner font-bold">{posts.length}</span> Check-ins
-              </div>
+             
               <div className="w-full flex flex-col justify-start items-start gap-6 py-4">
                 {posts &&
                   posts.map((post, index) => {
                     const place: Place = typeof post.place === "string" ? JSON.parse(post.place) : post.place;
                     return (
-
                       <div key={index} className="w-full flex flex-col justify-start items-start gap-4">
                         <div className="text-sm bg-blue-600/10 p-2 rounded-xl text-blue-500">Today</div>
                         <div className="w-full flex justify-start items-start gap-5">
@@ -357,26 +320,21 @@ export default function Home() {
                             <div className="w-full">
                               <img src={post.photoURI} className="object-contain" alt=""></img>
                             </div>
-                            <div className="flex flex-col justify-start items-start gap-1">
-                              <span className="text-xs text-gray-400">Today</span>
-                            </div>
-                            <span className="text-xs text-gray-400 flex justify-start items-center gap-1">Checked by <span className="text-pinner">Today</span></span>
-                            {/* <div className="w-full flex justify-start items-center gap-1">
-                          {
-                            place.humans.map((human, index) => (
-                              <div key={index} className="w-10 aspect-square rounded-full border-2 border-white">
-                                <Image alt="pp" src={human.image} className="w-full aspect-square rounded-full" />
+                            <div className="w-full flex justify-between items-center">
+                              <div className="flex flex-col justify-start items-start gap-1">
+                                <span className="text-xs text-gray-400">Today</span>
+                                <span className="text-xs text-gray-400 flex justify-start items-center gap-1">Checked by <span className="text-pinner">Today</span></span>
                               </div>
-                            ))
-                          }
-                        </div> */}
+                              <div className="w-8 aspect-square rounded-full border-2 border-white">
+                                <Image alt="pp" onClick={() => {}} src={heartNone} className="w-full aspect-square rounded-full" />
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
                     )
-
                   })
-                }
+                 }
               </div>
             </div>
           </div>
