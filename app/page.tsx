@@ -42,6 +42,7 @@ type IPost = {
   content: string;
   photoURI: string;
   place: string;
+  likers?: string[];
 }
 interface Place {
   business_status: string;
@@ -136,28 +137,24 @@ export default function Home() {
       setOpenModal(true);
     }
   }, []);
-
-  const likeDislikePost = async (postId: string) => {
+  const likeCheckIn = async (postId: string) => {
     try {
-      if (likedPosts.includes(postId)) {
-        // Eğer zaten like edilmişse, dislike yap
-        // await sendLikeRequest(postId, 'dislike');
-        setLikedPosts((prevLikedPosts) =>
-          prevLikedPosts.filter((id) => id !== postId)
-        );
-      } else {
-        // Eğer like edilmemişse, API'ye like isteği gönder ve listeye ekle
-        // await sendLikeRequest(postId, 'like');
-        setLikedPosts((prevLikedPosts) => [...prevLikedPosts, postId]);
+      const data = await ApiService.post(`/checkin/like`, { post_id: postId });
+      if (data) {
+        if (likedPosts.includes(postId)) {
+          setLikedPosts((prevLikedPosts) =>
+            prevLikedPosts.filter((id) => id !== postId)
+          );
+        } else {
+          setLikedPosts((prevLikedPosts) => [...prevLikedPosts, postId]);
+        }
       }
     } catch (error: any) {
       toast(error.message || "An error occurred while updating like status", {
         type: "error",
       });
     }
-  };
-
-
+  }
 
   const mintNft = () => {
     const contract = PinnerBadges.fromAddress(Address.parse('EQBF-L0mnYLMPuX3MK8bnOiqxZHu-lU5MG0HT2D-Sh7GsKdw'));
@@ -208,6 +205,19 @@ export default function Home() {
       setLoginStatus(true);
     }
   }, [userToken]);
+  useEffect(() => {
+    if (posts.length > 0) {
+      for (let index = 0; index < posts.length; index++) {
+        const element = posts[index];
+        if (element.likers && element.likers.includes(user.id)) {
+          setLikedPosts((prevLikedPosts) => [...prevLikedPosts, element._id]);
+        }
+        else {
+          setLikedPosts((prevLikedPosts) => prevLikedPosts.filter((id) => id !== element._id));
+        }
+      }
+    }
+  }, [posts]);
   return (
     <LayoutWrapper>
       {
@@ -348,8 +358,8 @@ export default function Home() {
                                 <span className="text-xs text-gray-400 flex justify-start items-center gap-1">Checked by <span className="text-pinner">Today</span></span>
                               </div>
                               <div className="w-6 aspect-square rounded-full border-2 border-white">
-                                <Image alt="heart-none" onClick={() => { likeDislikePost(post._id) }} src={heartNone} className={`${!likedPosts.includes(post._id) ? 'block' : 'hidden'} w-full aspect-square rounded-full`} />
-                                <Image alt="heart" onClick={() => { likeDislikePost(post._id) }} src={heart} className={`${likedPosts.includes(post._id) ? 'block' : 'hidden'} w-full aspect-square rounded-full`} />
+                                <Image alt="heart-none" onClick={() => { likeCheckIn(post._id) }} src={heartNone} className={`${!likedPosts.includes(post._id) ? 'block' : 'hidden'} w-full aspect-square rounded-full`} />
+                                <Image alt="heart" onClick={() => { likeCheckIn(post._id) }} src={heart} className={`${likedPosts.includes(post._id) ? 'block' : 'hidden'} w-full aspect-square rounded-full`} />
                               </div>
                             </div>
                           </div>
