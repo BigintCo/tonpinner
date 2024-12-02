@@ -13,6 +13,7 @@ import diamond from "@/public/pinnerimages/toncoin-ton-logo.svg";
 import wallet from "@/public/pinnerimages/wallet-svgrepo-com.svg";
 import logo from "@/public/pinnerimages/tonpinner-logo.svg";
 import pathIcon from "@/public/pinnerimages/Path.svg";
+import loadingIcon from "@/public/pinnerimages/loading.svg";
 
 
 import { useEffect, useState } from "react";
@@ -30,6 +31,7 @@ import { toast } from "react-toastify";
 import { useAppContext } from "@/providers/app-provider";
 import ApiService from "@/utils/api-service";
 import { IUser } from "@/types/user";
+
 type IPost = {
   _id: string;
   content: string;
@@ -82,6 +84,7 @@ interface Place {
   user_ratings_total?: number;
   vicinity: string;
 }
+
 export default function Home() {
   const { slug: userTelegramId } = useParams();
   const router = useRouter();
@@ -95,7 +98,9 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(false);
   const [posts, setPosts] = useState<IPost[]>([]);
   const [likedPosts, setLikedPosts] = useState<string[]>([]);
+  const [followers, setFollowers] = useState<string[]>([]);
   const [userId, setUserId] = useState<string>('');
+  const [followLoading, setFollowLoading] = useState<boolean>(false);
 
   async function getDiscoverPosts() {
     setLoading(true);
@@ -153,7 +158,7 @@ export default function Home() {
     if (user) {
       setUserId(user.id);
     }
-   }, [user]);
+  }, [user]);
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -176,6 +181,7 @@ export default function Home() {
       setOpenModal(true);
     }
   }, []);
+
   const likeCheckIn = async (postId: string) => {
     try {
       const data = await ApiService.post(`/checkin/like`, { post_id: postId });
@@ -194,6 +200,26 @@ export default function Home() {
       });
     }
   }
+  const followUser = async (userId: string) => {
+    try {
+      setFollowLoading(true);
+      const data = await ApiService.post(`/users/follow`, { tg_user_id: userId });
+      if (data) {
+        if (followers.includes(user.id)) {
+          setFollowers((prevFollowers) =>
+            prevFollowers.filter((id) => id !== user.id)
+          );
+        } else {
+          setFollowers((prevFollowers) => [...prevFollowers, user.id]);
+        }
+      }
+    } catch (error: any) {
+      toast(error.message || "An error occurred while updating like status", {
+        type: "error",
+      });
+    }
+    setFollowLoading(false);
+  }
   useEffect(() => {
     if (posts.length > 0) {
       for (let index = 0; index < posts.length; index++) {
@@ -204,6 +230,13 @@ export default function Home() {
         else {
           setLikedPosts((prevLikedPosts) => prevLikedPosts.filter((id) => id !== element._id));
         }
+        if (element.user.followers && element.user.followers.includes(user.id)) {
+          setFollowers((prevFollowers) => [...prevFollowers, user.id]);
+        }
+        else {
+          setFollowers((prevFollowers) => prevFollowers.filter((id) => id !== user.id));
+        }
+
       }
     }
   }, [posts]);
@@ -289,12 +322,42 @@ export default function Home() {
           </div>
           <div className="w-full h-[90vh] overflow-scroll scroll-hidden  relative flex flex-col justify-start items-start gap-2">
             <div className="w-full px-8 py-4 rounded-lg flex flex-col justify-start items-start gap-3">
-              <div className="w-full">
+              <div className="w-full flex flex-col justify-start items-start gap-5">
+                <div className="w-full flex justify-between items-center gap-2">
+                  <img src={posts.length > 0 && posts[0].user.photoUrl ? posts[0].user.photoUrl : ''} className="w-12 aspect-square rounded-full" alt="" />
+                  <div className="w-full flex flex-col justify-start items-start gap-1">
+                    <span className="text-xs font-semibold">{posts.length > 0 && posts[0].user.firstName} {posts.length > 0 && posts[0].user.lastName}</span>
+                    <div className="w-full flex justify-start items-center gap-5 text-xs">
+                      <div className="flex justify-start items-center gap-2">
+                        <span className="text-gray-400">Followers</span>
+                        <span className="text-gray-600">{posts.length > 0 && posts[0].user.followers ? posts[0].user.followers.length : 0}</span>
+                      </div>
+                      <div className="flex justify-start items-center gap-2">
+                        <span className="text-gray-400">Followings</span>
+                        <span className="text-gray-600">{posts.length > 0 && posts[0].user.followings ? posts[0].user.followings.length : 0}</span>
+                      </div>
+                    </div>
+                  </div>
+                  {
+                    !followLoading &&
+                    <button onClick={() => { posts.length > 0 && followUser(posts[0].user.id) }} className={`bg-pinner w-24 p-2 rounded-lg text-white text-xs ${followers.includes(user.id) ? 'hidden' : 'block'}`}>Follow</button>
+                  }
+                  {
+                    !followLoading &&
+                  <button onClick={() => { posts.length > 0 && followUser(posts[0].user.id) }} className={`bg-white w-24 p-2 rounded-lg text-pinner border border-blue-400/30 text-xs ${!followers.includes(user.id) ? 'hidden' : 'block'}`}>Unfollow</button>
+                  }
+                  {
+                    followLoading &&
+                    <button className="bg-pinner w-24 p-2 rounded-lg text-white text-xs flex justify-center items-center">
+                      <Image src={loadingIcon} alt="loading" className="w-5 aspect-square "></Image>
+                    </button>
+                  }
+                </div>
                 <MapProvider>
                   <MapComponent location={posts.map((post) => {
                     const place: Place = typeof post.place === "string" ? JSON.parse(post.place) : post.place;
                     return { lat: place.geometry.location.lat, lng: place.geometry.location.lng }
-                  })}  showMe={userId && userId.toString() === userTelegramId.toString() ? true : false}/>
+                  })} showMe={userId && userId.toString() === userTelegramId.toString() ? true : false} />
                 </MapProvider>
               </div>
               <div className="w-full flex justify-between items-center ">
@@ -309,7 +372,7 @@ export default function Home() {
                 </button>
               </div>
               {
-               userId && userId.toString() === userTelegramId.toString() &&
+                userId && userId.toString() === userTelegramId.toString() &&
                 <button onClick={() => router.push('/premium')} className="w-full flex justify-center items-center gap-2 p-2 text-pinner border border-blue-500/50 rounded-3xl">
                   <Image alt="diamond" src={diamond} className="w-8 aspect-square"></Image>
                   Get Premium
@@ -320,7 +383,6 @@ export default function Home() {
                   posts.map((post, index) => {
                     const place: Place = typeof post.place === "string" ? JSON.parse(post.place) : post.place;
                     return (
-
                       <div key={index} className="w-full flex flex-col justify-start items-start gap-4">
                         <div className="text-sm bg-blue-600/10 p-2 rounded-xl text-blue-500">
                           {

@@ -10,6 +10,8 @@ export type IUser = {
   firstName: string,
   lastName: string,
   photoUrl: string,
+  followers?: string[],
+  followings?: string[],
 }
 
 export type IFriends = {
