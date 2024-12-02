@@ -32,8 +32,8 @@ import { useAppContext } from "@/providers/app-provider";
 import ApiService from "@/utils/api-service";
 import { IUser } from "@/types/user";
 import SearchOne from "@/components/search/search-one";
-
-type IPost = {
+ 
+export type IPost = {
   _id: string;
   content: string;
   photoURI: string;

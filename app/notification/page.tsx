@@ -8,15 +8,49 @@ import notificationIcon from "@/public/pinnerimages/bell.svg";
 import location from "@/public/pinnerimages/geo-alt.svg";
 import discover from "@/public/pinnerimages/discover.svg";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TonConnectButton } from "@tonconnect/ui-react";
 import LayoutWrapper from "@/layout";
 import { useAppContext } from "@/providers/app-provider";
+import { toast } from "react-toastify";
+import ApiService from "@/utils/api-service";
+import { IUser } from "@/types/user";
+import { IPost } from "../profile/[slug]/page";
 
 export default function Home() {
+  type INotification = {
+    "post_id": string,
+    "receiver": number,
+    "sender": number,
+    "notification_type": string,
+    "notification_date": string,
+    "sender_user": IUser,
+    "post": IPost
+  }
   const { user } = useAppContext();
   const [openMenu, setOpenMenu] = useState(false);
+  const router = useRouter();
+  const [notifications, setNotifications] = useState<INotification[]>([]);
 
+  const getNotifications = async () => {
+    try {
+      const { data } = await ApiService.get(`/users/notifications`);
+      if (data) {
+        setNotifications(data);
+      }
+    }
+    catch (e: any) {
+      toast(e?.response?.data?.error, { type: 'error' });
+    }
+  };
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      getNotifications();
+    }
+  }, []);
+  useEffect(() => {
+    console.log(notifications, 'notifications');
+  }, [notifications]);
   return (
     <LayoutWrapper>
       <div className="w-full h-screen flex flex-col items-start relative bg-white">
@@ -42,9 +76,35 @@ export default function Home() {
           </div>
         </div>
         <div className="w-full h-[90vh] overflow-scroll scroll-hidden">
-          <div className="w-full flex justify-center items-center text-pinner h-full">
-            You have no notifications!
-          </div>
+          {
+            notifications.length === 0 ?
+              <div className="w-full flex justify-center items-center text-pinner h-full">
+                You have no notifications!
+              </div>
+              :
+              <div className="w-full flex flex-col gap-3">
+                {
+                  notifications.map((notification, index) => {
+                    return (
+                      <div key={index} className="w-full flex justify-start items-center gap-2 px-4 py-2">
+                        <div className="w-10 aspect-square rounded-full border-2 border-white">
+                          <img alt="pp" src={notification.sender_user.photoUrl} className="w-full aspect-square rounded-full" />
+                        </div>
+                        <div className="w-3/4 flex flex-col gap-1">
+                          <span className="text-xs text-gray-700">{notification.sender_user.firstName} {notification.sender_user.lastName} {notification.notification_type === 'like' ? 'liked' : 'follow' ? 'followed' : 'commented on'} your post</span>
+                          <span className="text-xs text-gray-500">
+                            {
+                              new Date(notification.notification_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+                            }
+                          </span>
+                        </div>
+                        
+                      </div>
+                    );
+                  })
+                }
+              </div>
+          }
         </div>
         <div className="w-full flex justify-between gap-10 items-end px-16 py-3 relative border-t border-[#24A1DE]/30">
           <Link href={'/'} className="w-7 aspect-auto flex flex-col justify-center items-center gap-1">
