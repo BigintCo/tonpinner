@@ -322,11 +322,11 @@ export default function Pin() {
                         <div className="w-full flex justify-start items-center gap-4">
                             {
                                 user?.photoUrl ?
-                                    <div className="w-8 aspect-square rounded-full border-2 border-white">
+                                    <div onClick={()=>{router.push('/profile/' + user.id)}} className="w-8 aspect-square rounded-full border-2 border-white">
                                         <Image alt="pp" src={user?.photoUrl} width={25} height={25} className="w-full aspect-square rounded-full" />
                                     </div>
                                     :
-                                    <div className="w-8 aspect-square rounded-full border-2 border-white">
+                                    <div onClick={()=>{router.push('/profile/' + user.id)}} className="w-8 aspect-square rounded-full border-2 border-white">
                                         <Image alt="pp" src={human} className="w-14 aspect-square rounded-full" />
                                     </div>
                             }
