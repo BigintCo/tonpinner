@@ -38,6 +38,7 @@ type IPlace = {
   humans: { image: StaticImageData }[];
 };
 type IPost = {
+  _id: string;
   content: string;
   photoURI: string;
   place: string;
@@ -92,6 +93,7 @@ export default function Home() {
   const [loginStatus, setLoginStatus] = useState(false);
   const router = useRouter();
 
+  const [likedPosts, setLikedPosts] = useState<string[]>([]);
   const [openModal, setOpenModal] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const [section, setSection] = useState<number>(0);
@@ -134,6 +136,26 @@ export default function Home() {
       setOpenModal(true);
     }
   }, []);
+
+  const likeDislikePost = async (postId: string) => {
+    try {
+      if (likedPosts.includes(postId)) {
+        // Eğer zaten like edilmişse, dislike yap
+        // await sendLikeRequest(postId, 'dislike');
+        setLikedPosts((prevLikedPosts) =>
+          prevLikedPosts.filter((id) => id !== postId)
+        );
+      } else {
+        // Eğer like edilmemişse, API'ye like isteği gönder ve listeye ekle
+        // await sendLikeRequest(postId, 'like');
+        setLikedPosts((prevLikedPosts) => [...prevLikedPosts, postId]);
+      }
+    } catch (error: any) {
+      toast(error.message || "An error occurred while updating like status", {
+        type: "error",
+      });
+    }
+  };
 
 
 
@@ -303,7 +325,7 @@ export default function Home() {
                 <Image alt="diamond" src={diamond} className="w-8 aspect-square"></Image>
                 Get Premium
               </button>
-             
+
               <div className="w-full flex flex-col justify-start items-start gap-6 py-4">
                 {posts &&
                   posts.map((post, index) => {
@@ -325,8 +347,9 @@ export default function Home() {
                                 <span className="text-xs text-gray-400">Today</span>
                                 <span className="text-xs text-gray-400 flex justify-start items-center gap-1">Checked by <span className="text-pinner">Today</span></span>
                               </div>
-                              <div className="w-8 aspect-square rounded-full border-2 border-white">
-                                <Image alt="pp" onClick={() => {}} src={heartNone} className="w-full aspect-square rounded-full" />
+                              <div className="w-6 aspect-square rounded-full border-2 border-white">
+                                <Image alt="heart-none" onClick={() => { likeDislikePost(post._id) }} src={heartNone} className={`${!likedPosts.includes(post._id) ? 'block' : 'hidden'} w-full aspect-square rounded-full`} />
+                                <Image alt="heart" onClick={() => { likeDislikePost(post._id) }} src={heart} className={`${likedPosts.includes(post._id) ? 'block' : 'hidden'} w-full aspect-square rounded-full`} />
                               </div>
                             </div>
                           </div>
@@ -334,7 +357,7 @@ export default function Home() {
                       </div>
                     )
                   })
-                 }
+                }
               </div>
             </div>
           </div>
