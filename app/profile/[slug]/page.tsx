@@ -31,6 +31,7 @@ import { toast } from "react-toastify";
 import { useAppContext } from "@/providers/app-provider";
 import ApiService from "@/utils/api-service";
 import { IUser } from "@/types/user";
+import SearchOne from "@/components/search/search-one";
 
 type IPost = {
   _id: string;
@@ -303,19 +304,16 @@ export default function Home() {
             <div className="w-full flex justify-between items-center gap-4">
               {
                 user?.photoUrl ?
-                  <div className="w-14 aspect-square rounded-full border-2 border-white">
-                    <Image alt="pp" src={user?.photoUrl} width={56} height={56} className="w-full aspect-square rounded-full" />
+                  <div className="w-8 aspect-square rounded-full border-2 border-white">
+                    <Image alt="pp" src={user?.photoUrl} width={25} height={25} className="w-full aspect-square rounded-full" />
                   </div>
                   :
-                  <div className="w-14 aspect-square rounded-full border-2 border-white">
+                  <div className="w-8 aspect-square rounded-full border-2 border-white">
                     <Image alt="pp" src={human} className="w-14 aspect-square rounded-full" />
                   </div>
               }
-              <div className="w-full flex justify-center items-center gap-2 bg-black/10 py-1 px-4 rounded-lg text-white text-sm">
-                <Image alt="search" src={search} className="w-4 aspect-square"></Image>
-                <span>Search</span>
-              </div>
-              <div onClick={() => setOpenMenu(true)} className="w-12 aspect-square flex justify-center items-center">
+              <SearchOne />
+              <div onClick={() => setOpenMenu(true)} className="w-8 aspect-square flex justify-center items-center">
                 <Image alt="envlp" src={wallet}></Image>
               </div>
             </div>
