@@ -95,6 +95,7 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(false);
   const [posts, setPosts] = useState<IPost[]>([]);
   const [likedPosts, setLikedPosts] = useState<string[]>([]);
+  const [userId, setUserId] = useState<string>('');
 
   async function getDiscoverPosts() {
     setLoading(true);
@@ -104,13 +105,8 @@ export default function Home() {
         if (data) {
           setPosts(data);
         }
-        // else {
-        //     localStorage.removeItem('token');
-        // }
       }
-
     } catch (e: any) {
-      // localStorage.removeItem('token');
       toast(e?.response?.data?.error, { type: 'error' })
     }
     setLoading(false);
@@ -154,6 +150,11 @@ export default function Home() {
   }
 
   useEffect(() => {
+    if (user) {
+      setUserId(user.id);
+    }
+   }, [user]);
+  useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       handleUserToken(token);
@@ -163,10 +164,12 @@ export default function Home() {
   useEffect(() => {
     if (userToken) {
       setLoginStatus(true);
+      console.log('userToken', user.id);
     }
   }, [userToken]);
   useEffect(() => {
     getDiscoverPosts();
+    console.log('userTelegramId', userTelegramId);
   }, [userTelegramId]);
   useEffect(() => {
     if (localStorage.getItem('firstPin')) {
@@ -291,7 +294,7 @@ export default function Home() {
                   <MapComponent location={posts.map((post) => {
                     const place: Place = typeof post.place === "string" ? JSON.parse(post.place) : post.place;
                     return { lat: place.geometry.location.lat, lng: place.geometry.location.lng }
-                  })} />
+                  })}  showMe={userId && userId.toString() === userTelegramId.toString() ? true : false}/>
                 </MapProvider>
               </div>
               <div className="w-full flex justify-between items-center ">
@@ -305,10 +308,13 @@ export default function Home() {
                   36/100 Categories
                 </button>
               </div>
-              <button onClick={() => router.push('/premium')} className="w-full flex justify-center items-center gap-2 p-2 text-pinner border border-blue-500/50 rounded-3xl">
-                <Image alt="diamond" src={diamond} className="w-8 aspect-square"></Image>
-                Get Premium
-              </button>
+              {
+               userId && userId.toString() === userTelegramId.toString() &&
+                <button onClick={() => router.push('/premium')} className="w-full flex justify-center items-center gap-2 p-2 text-pinner border border-blue-500/50 rounded-3xl">
+                  <Image alt="diamond" src={diamond} className="w-8 aspect-square"></Image>
+                  Get Premium
+                </button>
+              }
               <div className="w-full flex flex-col justify-start items-start gap-6 py-4">
                 {posts &&
                   posts.map((post, index) => {
@@ -339,7 +345,7 @@ export default function Home() {
                                 </span>
                                 <span className="text-xs text-gray-400 flex justify-start items-center gap-1">
                                   Checked by
-                                  <span className="text-pinner">
+                                  <span onClick={() => { router.push('/profile/' + post.user.id) }} className="text-pinner">
                                     {post.user.firstName} {post.user.lastName}
                                   </span>
                                 </span>

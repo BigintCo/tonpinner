@@ -304,7 +304,7 @@ export default function Home() {
                   <MapComponent location={posts.map((post) => {
                     const place: Place = typeof post.place === "string" ? JSON.parse(post.place) : post.place;
                     return { lat: place.geometry.location.lat, lng: place.geometry.location.lng }
-                  })} />
+                  })}  showMe={true}/>
                 </MapProvider>
               </div>
               <div className="w-full flex justify-between items-center ">

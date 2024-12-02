@@ -4,7 +4,6 @@ we need to make this component client rendered as well*/
 
 //Map component Component from library
 import { GoogleMap, Marker } from "@react-google-maps/api";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 //Map's styling
@@ -41,17 +40,16 @@ interface Location {
   
   interface MapComponentProps {
     location?: Location[];
+    showMe?: boolean;
   }
   
-  const MapComponent: React.FC<MapComponentProps> = ({ location }) => {
-    const pathname = usePathname();
+  const MapComponent: React.FC<MapComponentProps> = ({ location, showMe }) => {
     const [currentPosition, setCurrentPosition] = useState<{
         lat: number;
         lng: number;
     } | null>(null);
 
     function getNavigation() {
-        console.log(pathname, 'pathname');
         if (navigator.geolocation) {
             const watchId = navigator.geolocation.watchPosition(
                 (position) => {
@@ -60,20 +58,17 @@ interface Location {
                     localStorage.setItem('latlong', JSON.stringify({ lat: latitude, lng: longitude }));
                 },
                 (error) => {
-                    console.error("Konum alınırken hata oluştu:", error);
+                    console.error("Error:", error);
                 },
                 { enableHighAccuracy: true }
             );
-
-            // watchPosition'u temizle
             return () => navigator.geolocation.clearWatch(watchId);
         } else {
-            console.error("Geolocation API desteklenmiyor.");
+            console.error("Geolocation API does not support.");
         }
     }
     useEffect(() => {
         if (!currentPosition) {
-            console.log('currentPosition', currentPosition);
             getNavigation();
             const latlong = localStorage.getItem('latlong');
             if (latlong) {
@@ -85,7 +80,7 @@ interface Location {
         <div className="w-full">
             <GoogleMap
                 mapContainerStyle={defaultMapContainerStyle}
-                center={currentPosition ? currentPosition : defaultMapCenter}
+                center={currentPosition && showMe ? currentPosition : defaultMapCenter}
                 zoom={defaultMapZoom}
                 options={defaultMapOptions}
             >
@@ -104,7 +99,7 @@ interface Location {
                     />
 
                 ))}
-                {currentPosition ?
+                {currentPosition && showMe ?
                     <Marker position={currentPosition} />
                     : null
                 }
