@@ -338,16 +338,17 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
+
                   {
-                    !followLoading &&
+                    !followLoading && (userId && userId.toString() !== userTelegramId.toString()) &&
                     <button onClick={() => { posts.length > 0 && followUser(posts[0].user.id) }} className={`bg-pinner w-24 p-2 rounded-lg text-white text-xs ${followers.includes(user.id) ? 'hidden' : 'block'}`}>Follow</button>
                   }
                   {
-                    !followLoading &&
+                    !followLoading && (userId && userId.toString() !== userTelegramId.toString()) &&
                   <button onClick={() => { posts.length > 0 && followUser(posts[0].user.id) }} className={`bg-white w-24 p-2 rounded-lg text-pinner border border-blue-400/30 text-xs ${!followers.includes(user.id) ? 'hidden' : 'block'}`}>Unfollow</button>
                   }
                   {
-                    followLoading &&
+                    followLoading && (userId && userId.toString() !== userTelegramId.toString()) &&
                     <button className="bg-pinner w-24 p-2 rounded-lg text-white text-xs flex justify-center items-center">
                       <Image src={loadingIcon} alt="loading" className="w-5 aspect-square "></Image>
                     </button>
