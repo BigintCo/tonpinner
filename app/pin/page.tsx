@@ -64,7 +64,7 @@ export default function Pin() {
     const myWallet = useTonWallet();
     const [loading, setLoading] = useState<boolean>(false);
     const [pinnedPlace, setPinnedPlace] = useState<string>('Choose a place');
-    const [placesWindow, setPlacesWindow] = useState<boolean>(false);
+    const [placesWindow, setPlacesWindow] = useState<boolean>(true);
     const [places, setPlaces] = useState<IPlaces[] | null>(null);
     const [nfts, setNfts] = useState<any[] | null>(null);
     const [error, setError] = useState<string | null>(null);
