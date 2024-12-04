@@ -361,9 +361,9 @@ export default function Home() {
                           </div>
                           {
                             post.used_badge &&
-                          <div className="flex justify-end items-center">
-                            <img src={post.used_badge.image} className="w-8 aspect-square" alt="" />
-                          </div>
+                            <div className="flex justify-end items-center">
+                              <img src={post.used_badge.image} className="w-8 aspect-square" alt="" />
+                            </div>
                           }
                         </div>
                         <div className="w-full flex justify-start items-start gap-5">
