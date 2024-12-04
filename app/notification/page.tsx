@@ -9,7 +9,7 @@ import location from "@/public/pinnerimages/geo-alt.svg";
 import discover from "@/public/pinnerimages/discover.svg";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { TonConnectButton } from "@tonconnect/ui-react";
+import { TonConnectButton, useTonWallet } from "@tonconnect/ui-react";
 import LayoutWrapper from "@/layout";
 import { useAppContext } from "@/providers/app-provider";
 import { toast } from "react-toastify";
@@ -32,6 +32,7 @@ export default function Home() {
   const [openMenu, setOpenMenu] = useState(false);
   const router = useRouter();
   const [notifications, setNotifications] = useState<INotification[]>([]);
+  const myWallet = useTonWallet();
 
   const getNotifications = async () => {
     try {
@@ -120,12 +121,19 @@ export default function Home() {
           </Link>
         </div>
         {
-          openMenu &&
-          <div className="w-full h-[200px] absolute bottom-0 left-0 bg-white z-50 flex justify-center items-center rounded-t-xl  border-t border-blue-500">
-            <div onClick={() => { setOpenMenu(false) }} className="p-1 w-10 aspect-square rounded-full bg-pinner text-2xl flex justify-center items-center absolute top-4 right-4 text-white">X</div>
-            <TonConnectButton />
-          </div>
-        }
+            openMenu &&
+            <div className="w-full h-[300px] absolute bottom-0 left-0 bg-white z-50 flex flex-col gap-5 justify-start py-4 items-center rounded-t-xl  border-t border-blue-500">
+              <div onClick={() => { setOpenMenu(false) }} className="p-1 w-10 aspect-square rounded-full bg-pinner text-2xl flex justify-center items-center absolute top-4 right-4 text-white">X</div>
+              <div className="w-full flex flex-col justify-center items-center gap-1">
+                <div className="text-pinner text-2xl">Wallet Connect</div>
+                {
+                 myWallet && myWallet?.account.address &&
+                  <span>You connected</span>
+                }
+              </div>
+              <TonConnectButton />
+            </div>
+          }
       </div>
     </LayoutWrapper>
   );
