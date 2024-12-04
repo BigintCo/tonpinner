@@ -13,6 +13,7 @@ export type IUser = {
   followers?: string[],
   followings?: string[],
   walletAddress: string,
+  ton_pinner_score: number,
 }
 
 export type IFriends = {

@@ -341,7 +341,7 @@ export default function Home() {
               <div className="w-full flex flex-col justify-start items-start gap-5">
                 <div className="w-full flex justify-between items-center gap-2">
                   <img src={userInfo && userInfo.photoUrl} className="w-12 aspect-square rounded-full" alt="" />
-                  <div className="w-full flex flex-col justify-start items-start gap-1">
+                  <div className="w-full flex flex-col justify-start items-start gap-2">
                     <span className="text-xs font-semibold">{userInfo && userInfo.firstName} {userInfo && userInfo.lastName}</span>
                     <div className="w-full flex justify-start items-center gap-3 text-xs">
                       <div className="flex justify-start items-center gap-2">
@@ -353,6 +353,7 @@ export default function Home() {
                         <span className="text-gray-600">{userInfo && userInfo.followings ? userInfo.followings.length : 0}</span>
                       </div>
                     </div>
+                    <div className="text-2xs font-semibold bg-pinner bg-opacity-30 px-2 rounded-lg text-white flex justify-start items-center gap-2"> <span>Total Score: </span> {userInfo && userInfo.ton_pinner_score} Points</div>
                   </div>
                   {
                     !followLoading && (userId && userId.toString() !== userTelegramId.toString()) &&

@@ -103,10 +103,10 @@ export default function Home() {
 
   async function walletConnect() {
     try {
-      if (myWallet && !user.walletAddress) {
+      if (myWallet) {
         const data = await ApiService.post(`/users/walletConnect`, { walletAddress: myWallet.account.address });
-        if (data) {
-          console.log(data);
+        if (!data) {
+          toast('An error occurred while connecting wallet! Please connect your wallet again', { type: 'error' });
         }
       }
     }
@@ -223,10 +223,11 @@ export default function Home() {
     }
   }, []);
   useEffect(() => {
-    if (!user.walletAddress && myWallet) {
+    console.log(myWallet?.account.address, 'myWallet');
+    if (myWallet) {
       walletConnect();
     }
-  }, [myWallet, user]);
+  }, [myWallet]);
   return (
     <LayoutWrapper>
       {
@@ -353,7 +354,6 @@ export default function Home() {
                     return (
                       <div key={index} className="w-full flex flex-col justify-start items-start gap-4">
                         <div className="w-full flex justify-between items-center">
-
                           <div className="text-sm bg-blue-600/10 p-2 rounded-xl text-blue-500">
                             {
                               new Date(post.checkin_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
