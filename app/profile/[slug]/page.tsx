@@ -14,7 +14,7 @@ import wallet from "@/public/pinnerimages/wallet-svgrepo-com.svg";
 import logo from "@/public/pinnerimages/tonpinner-logo.svg";
 import pathIcon from "@/public/pinnerimages/Path.svg";
 import loadingIcon from "@/public/pinnerimages/loading.svg";
-
+import rocket from "@/public/pinnerimages/rocket.svg";
 
 import { useEffect, useState } from "react";
 import { SendTransactionRequest, TonConnectButton, useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
@@ -211,6 +211,18 @@ export default function Home() {
         } else {
           setLikedPosts((prevLikedPosts) => [...prevLikedPosts, postId]);
         }
+      }
+    } catch (error: any) {
+      toast(error.message || "An error occurred while updating like status", {
+        type: "error",
+      });
+    }
+  }
+  const boostCheckIn = async (postId: string) => {
+    try {
+      const data = await ApiService.post(`/checkin/boost`, { post_id: postId });
+      if (data) {
+        toast('Boosted successfully!', { type: 'success' });
       }
     } catch (error: any) {
       toast(error.message || "An error occurred while updating like status", {
@@ -447,9 +459,14 @@ export default function Home() {
                                   </span>
                                 </span>
                               </div>
-                              <div className="w-6 aspect-square rounded-full border-2 border-white">
-                                <Image alt="heart-none" onClick={() => { likeCheckIn(post._id) }} src={heartNone} className={`${!likedPosts.includes(post._id) ? 'block' : 'hidden'} w-full aspect-square rounded-full`} />
-                                <Image alt="heart" onClick={() => { likeCheckIn(post._id) }} src={heart} className={`${likedPosts.includes(post._id) ? 'block' : 'hidden'} w-full aspect-square rounded-full`} />
+                              <div className="w-full flex justify-end items-center gap-2">
+                                <div className="w-6 aspect-square rounded-full border-2 border-white">
+                                  <Image alt="heart-none" onClick={() => { likeCheckIn(post._id) }} src={heartNone} className={`${!likedPosts.includes(post._id) ? 'block' : 'hidden'} w-full aspect-square rounded-full`} />
+                                  <Image alt="heart" onClick={() => { likeCheckIn(post._id) }} src={heart} className={`${likedPosts.includes(post._id) ? 'block' : 'hidden'} w-full aspect-square rounded-full`} />
+                                </div>
+                                <div className="w-6 aspect-square rounded-full border-2 border-white">
+                                  <Image alt="boost-rocket" onClick={() => { boostCheckIn(post._id) }} src={rocket} className={`w-full aspect-square rounded-full`} />
+                                </div>
                               </div>
                             </div>
                           </div>
