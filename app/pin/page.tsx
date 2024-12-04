@@ -74,7 +74,7 @@ export default function Pin() {
     const [nfts, setNfts] = useState<any[] | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [content, setContent] = useState<string>('');
-    const [badge, setBadge] = useState<IBadge>();
+    const [badge, setBadge] = useState<string>();
     const [currentPosition, setCurrentPosition] = useState<{
         lat: number;
         lng: number;
@@ -161,7 +161,7 @@ export default function Pin() {
                     formData.append('place', JSON.stringify(localStorage.getItem('pinnedPlace')));
                     formData.append('photo', selectedFile);
                     if (badge) {
-                        formData.append('used_badge', JSON.stringify(badge));
+                        formData.append('used_badge', badge);
                     }
                     const { data } = await axios.post(`/checkin/withPhoto`, formData, {
                         baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -211,7 +211,7 @@ export default function Pin() {
         getNavigation();
         const badge = localStorage.getItem('user_badge');
         if (badge) {
-            setBadge({ name: 'Badge', description: 'Badge', image: badge });
+            setBadge(badge);
         }
     }, []);
     useEffect(() => {
@@ -240,7 +240,9 @@ export default function Pin() {
             getNearMePlaces();
         }
     }, [currentPosition]);
-
+    useEffect(() => {
+        console.log('badge', badge);
+    }, [badge]);
     return (
         <LayoutWrapper>
             <div key={path} className="w-full h-screen overflow-hidden flex flex-col items-start justify-between bg-white relative">

@@ -38,6 +38,9 @@ type IPost = {
   likers?: string[];
   user: IUser;
   checkin_date: string;
+  used_badge: {
+    image: string;
+  };
 }
 interface Place {
   business_status: string;
@@ -349,9 +352,18 @@ export default function Home() {
                     const place: Place = typeof post.place === "string" ? JSON.parse(post.place) : post.place;
                     return (
                       <div key={index} className="w-full flex flex-col justify-start items-start gap-4">
-                        <div className="text-sm bg-blue-600/10 p-2 rounded-xl text-blue-500">
+                        <div className="w-full flex justify-between items-center">
+
+                          <div className="text-sm bg-blue-600/10 p-2 rounded-xl text-blue-500">
+                            {
+                              new Date(post.checkin_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+                            }
+                          </div>
                           {
-                            new Date(post.checkin_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+                            post.used_badge &&
+                          <div className="flex justify-end items-center">
+                            <img src={post.used_badge.image} className="w-8 aspect-square" alt="" />
+                          </div>
                           }
                         </div>
                         <div className="w-full flex justify-start items-start gap-5">
@@ -409,7 +421,7 @@ export default function Home() {
               <div className="w-full flex flex-col justify-center items-center gap-1">
                 <div className="text-pinner text-2xl">Wallet Connect</div>
                 {
-                 myWallet && myWallet?.account.address &&
+                  myWallet && myWallet?.account.address &&
                   <span>You connected</span>
                 }
               </div>

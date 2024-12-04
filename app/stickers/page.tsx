@@ -50,14 +50,14 @@ export default function Stickers() {
                     {
                         nfts?.map((nft, index) => (
                             <div onClick={() => {
-                                if (localStorage.getItem('user_badge') === nft.metadata.image) {
+                                if (localStorage.getItem('user_badge') === JSON.stringify(nft.metadata)) {
                                     localStorage.removeItem('user_badge');
                                     localStorage.removeItem('user_badge_index');
                                     toast.error('Removed from your badge!');
                                     setSelectedBadge(null);
                                     return;
                                 }
-                                localStorage.setItem('user_badge', nft.metadata.image);
+                                localStorage.setItem('user_badge', JSON.stringify(nft.metadata));
                                 localStorage.setItem('user_badge_index', index.toString());
                                 setSelectedBadge(index);
                                 toast.success('Sticker added to your badge!');
