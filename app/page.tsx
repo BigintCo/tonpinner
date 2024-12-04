@@ -131,7 +131,6 @@ export default function Home() {
     }
     setLoading(false);
   }
-
   const likeCheckIn = async (postId: string) => {
     try {
       const data = await ApiService.post(`/checkin/like`, { post_id: postId });
@@ -405,8 +404,15 @@ export default function Home() {
           </div>
           {
             openMenu &&
-            <div className="w-full h-[200px] absolute bottom-0 left-0 bg-white z-50 flex justify-center items-center rounded-t-xl  border-t border-blue-500">
+            <div className="w-full h-[300px] absolute bottom-0 left-0 bg-white z-50 flex flex-col gap-5 justify-start py-4 items-center rounded-t-xl  border-t border-blue-500">
               <div onClick={() => { setOpenMenu(false) }} className="p-1 w-10 aspect-square rounded-full bg-pinner text-2xl flex justify-center items-center absolute top-4 right-4 text-white">X</div>
+              <div className="w-full flex flex-col justify-center items-center gap-1">
+                <div className="text-pinner text-2xl">Wallet Connect</div>
+                {
+                 myWallet && myWallet?.account.address &&
+                  <span>You connected</span>
+                }
+              </div>
               <TonConnectButton />
             </div>
           }
