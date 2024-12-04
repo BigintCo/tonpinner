@@ -14,6 +14,7 @@ export type IUser = {
   followings?: string[],
   walletAddress: string,
   ton_pinner_score: number,
+  ton_pinner_premium: boolean,
 }
 
 export type IFriends = {

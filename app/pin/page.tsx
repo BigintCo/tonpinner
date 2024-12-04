@@ -69,7 +69,7 @@ export default function Pin() {
     const myWallet = useTonWallet();
     const [loading, setLoading] = useState<boolean>(false);
     const [pinnedPlace, setPinnedPlace] = useState<string>('Choose a place');
-    const [placesWindow, setPlacesWindow] = useState<boolean>(true);
+    const [placesWindow, setPlacesWindow] = useState<boolean>(false);
     const [places, setPlaces] = useState<IPlaces[] | null>(null);
     const [nfts, setNfts] = useState<any[] | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -189,7 +189,7 @@ export default function Pin() {
                         used_badge: badge ? badge : null
                     });
                     if (data) {
-                        console.log(badge, 'aaaaaaaa');
+                        console.log(JSON.stringify(badge), 'aaaaaaaa');
                         if (JSON.stringify(badge)) {
                             toast('You earned 555 points!', { type: 'success' });
                         }

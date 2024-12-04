@@ -338,9 +338,14 @@ export default function Home() {
             <div className="w-full px-8 py-4 rounded-lg flex flex-col justify-start items-start gap-3">
               <div className="w-full flex flex-col justify-start items-start gap-5">
                 <div className="w-full flex justify-between items-center gap-2">
-                  <img src={userInfo && userInfo.photoUrl} className="w-12 aspect-square rounded-full" alt="" />
+                  <div className={`${userInfo && userInfo.ton_pinner_premium && 'border-4 border-yellow-400'} w-16 aspect-square rounded-full`}>
+                    <img src={userInfo && userInfo.photoUrl} className={`w-full aspect-square rounded-full`} alt="" />
+                  </div>
                   <div className="w-full flex flex-col justify-start items-start gap-2">
-                    <span className="text-xs font-semibold">{userInfo && userInfo.firstName} {userInfo && userInfo.lastName}</span>
+                    <div className="w-full flex justify-start items-center gap-2">
+                      <span className="text-xs font-semibold">{userInfo && userInfo.firstName} {userInfo && userInfo.lastName}</span>
+                      <span className={`${userInfo && !userInfo.ton_pinner_premium && 'hidden'} text-2xs text-black flex justify-center items-center bg-yellow-400 px-4 rounded-lg`}>Premium</span>
+                    </div>
                     <div className="w-full flex justify-start items-center gap-3 text-xs">
                       <div className="flex justify-start items-center gap-2">
                         <span className="text-gray-400">Followers</span>
@@ -352,7 +357,7 @@ export default function Home() {
                       </div>
                     </div>
                     {
-                      userInfo && 
+                      userInfo &&
                       <div className="text-2xs font-semibold bg-pinner bg-opacity-30 px-2 rounded-lg text-white flex justify-start items-center gap-2">
                         <span>Total Score: </span>
                         {userInfo.ton_pinner_score > 0 ? userInfo.ton_pinner_score : 0} Points
