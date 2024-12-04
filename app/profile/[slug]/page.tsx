@@ -354,10 +354,10 @@ export default function Home() {
                       </div>
                     </div>
                     {
-                      userInfo && userInfo.ton_pinner_score > 0 &&
+                      userInfo && 
                       <div className="text-2xs font-semibold bg-pinner bg-opacity-30 px-2 rounded-lg text-white flex justify-start items-center gap-2">
                         <span>Total Score: </span>
-                        {userInfo.ton_pinner_score} Points
+                        {userInfo.ton_pinner_score > 0 ? userInfo.ton_pinner_score : 0} Points
                       </div>
                     }
                   </div>
