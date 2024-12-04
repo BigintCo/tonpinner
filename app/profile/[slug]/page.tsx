@@ -353,7 +353,13 @@ export default function Home() {
                         <span className="text-gray-600">{userInfo && userInfo.followings ? userInfo.followings.length : 0}</span>
                       </div>
                     </div>
-                    <div className="text-2xs font-semibold bg-pinner bg-opacity-30 px-2 rounded-lg text-white flex justify-start items-center gap-2"> <span>Total Score: </span> {userInfo && userInfo.ton_pinner_score} Points</div>
+                    {
+                      userInfo && userInfo.ton_pinner_score > 0 &&
+                      <div className="text-2xs font-semibold bg-pinner bg-opacity-30 px-2 rounded-lg text-white flex justify-start items-center gap-2">
+                        <span>Total Score: </span>
+                        {userInfo.ton_pinner_score} Points
+                      </div>
+                    }
                   </div>
                   {
                     !followLoading && (userId && userId.toString() !== userTelegramId.toString()) &&

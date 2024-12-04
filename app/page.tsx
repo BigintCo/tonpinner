@@ -367,7 +367,7 @@ export default function Home() {
                           }
                         </div>
                         <div className="w-full flex justify-start items-start gap-5">
-                          <div onClick={() => { router.push('/profile/' + user.id) }} className="w-[10%] rounded-full bg-pinner flex justify-center items-center">
+                          <div onClick={() => { router.push('/profile/' + post.user.id) }} className="w-[10%] rounded-full bg-pinner flex justify-center items-center">
                             <img src={post.user.photoUrl} alt="" className="w-full aspect-square rounded-full" />
                           </div>
                           <div className="w-[90%] flex flex-col justify-start items-start gap-2">
