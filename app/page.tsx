@@ -384,7 +384,7 @@ export default function Home() {
                           </div>
                           <div className="w-[90%] flex flex-col justify-start items-start gap-2">
                             {
-                              post.user.ton_pinner_premium && 
+                              post.user.ton_pinner_premium &&
                               <span className={`text-2xs text-black flex justify-center items-center bg-yellow-400 px-4 rounded-lg`}>Premium</span>
 
                             }
@@ -408,7 +408,14 @@ export default function Home() {
                                   <Image alt="heart" onClick={() => { likeCheckIn(post._id) }} src={heart} className={`${likedPosts.includes(post._id) ? 'block' : 'hidden'} w-full aspect-square rounded-full`} />
                                 </div>
                                 <div className="w-6 aspect-square rounded-full border-2 border-white">
-                                  <Image alt="boost-rocket" onClick={() => { boostCheckIn(post._id) }} src={rocket} className={`w-full aspect-square rounded-full`} />
+                                  <Image alt="boost-rocket" onClick={() => {
+                                    if (user.ton_pinner_premium) {
+                                      boostCheckIn(post._id)
+                                    }
+                                    else {
+                                      toast.error('Only premium users can use boost')
+                                    }
+                                  }} src={rocket} className={`w-full aspect-square rounded-full`} />
                                 </div>
                               </div>
                             </div>

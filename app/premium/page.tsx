@@ -16,8 +16,8 @@ export default function Premium() {
     messages: [
       {
         address:
-          "UQAQLI0EVvO6M96aMXbi5xwTyQGxXGP4rxrFV6fCvdHRUvVZ", // message destination in user-friendly format
-        amount: "1000000", // Toncoin in nanotons
+          "UQA1DRT3O4ILDDHKsVGaDE3IT7w9TXapo44Ix-6IKH2YooOw", // message destination in user-friendly format
+        amount: "1000000000", // Toncoin in nanotons
       },
     ],
   };
