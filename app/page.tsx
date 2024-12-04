@@ -379,10 +379,15 @@ export default function Home() {
                           }
                         </div>
                         <div className="w-full flex justify-start items-start gap-5">
-                          <div onClick={() => { router.push('/profile/' + post.user.id) }} className="w-[10%] rounded-full bg-pinner flex justify-center items-center">
+                          <div onClick={() => { router.push('/profile/' + post.user.id) }} className={`${post.user.ton_pinner_premium && 'border-2 border-yellow-400'} w-[10%] rounded-full bg-pinner flex justify-center items-center`}>
                             <img src={post.user.photoUrl} alt="" className="w-full aspect-square rounded-full" />
                           </div>
                           <div className="w-[90%] flex flex-col justify-start items-start gap-2">
+                            {
+                              post.user.ton_pinner_premium && 
+                              <span className={`text-2xs text-black flex justify-center items-center bg-yellow-400 px-4 rounded-lg`}>Premium</span>
+
+                            }
                             <span className="text-sm font-medium">{place.name}</span>
                             <div className="w-full">
                               <img src={post.photoURI} className="object-contain rounded-lg" alt=""></img>
@@ -397,7 +402,7 @@ export default function Home() {
                                   <span className="text-pinner"> {post.user.firstName} {post.user.lastName} </span>
                                 </span>
                               </div>
-                              <div className=" flex justify-end items-center gap-2">
+                              <div className="flex justify-end items-center gap-2">
                                 <div className="w-6 aspect-square rounded-full border-2 border-white">
                                   <Image alt="heart-none" onClick={() => { likeCheckIn(post._id) }} src={heartNone} className={`${!likedPosts.includes(post._id) ? 'block' : 'hidden'} w-full aspect-square rounded-full`} />
                                   <Image alt="heart" onClick={() => { likeCheckIn(post._id) }} src={heart} className={`${likedPosts.includes(post._id) ? 'block' : 'hidden'} w-full aspect-square rounded-full`} />
