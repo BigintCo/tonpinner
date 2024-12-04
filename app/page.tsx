@@ -392,12 +392,12 @@ export default function Home() {
                                 <span className="text-xs text-gray-400">{
                                   new Date(post.checkin_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
                                 }</span>
-                                <span onClick={() => { router.push('/profile/' + post.user.id) }} className="text-xs text-gray-400 flex justify-start items-center gap-1">
+                                <span onClick={() => { router.push('/profile/' + post.user.id) }} className="text-xs text-gray-400 w-full flex justify-start items-center gap-1">
                                   Checked by
                                   <span className="text-pinner"> {post.user.firstName} {post.user.lastName} </span>
                                 </span>
                               </div>
-                              <div className="w-full flex justify-end items-center gap-2">
+                              <div className=" flex justify-end items-center gap-2">
                                 <div className="w-6 aspect-square rounded-full border-2 border-white">
                                   <Image alt="heart-none" onClick={() => { likeCheckIn(post._id) }} src={heartNone} className={`${!likedPosts.includes(post._id) ? 'block' : 'hidden'} w-full aspect-square rounded-full`} />
                                   <Image alt="heart" onClick={() => { likeCheckIn(post._id) }} src={heart} className={`${likedPosts.includes(post._id) ? 'block' : 'hidden'} w-full aspect-square rounded-full`} />
