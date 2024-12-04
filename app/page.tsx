@@ -97,6 +97,20 @@ export default function Home() {
   const [posts, setPosts] = useState<IPost[]>([]);
   const [tonConnectUI] = useTonConnectUI();
   const myWallet = useTonWallet();
+
+  async function walletConnect() {
+    try {
+      if (myWallet && !user.walletAddress) {
+        const data = await ApiService.post(`/users/walletConnect`, { walletAddress: myWallet.account.address });
+        if (data) {
+          console.log(data);
+        }
+      }
+    }
+    catch (e: any) {
+      toast(e?.response?.data?.error, { type: 'error' });
+    }
+  }
   async function getDiscoverPosts() {
     setLoading(true);
     try {
@@ -117,14 +131,7 @@ export default function Home() {
     }
     setLoading(false);
   }
-  useEffect(() => {
-    getDiscoverPosts();
-  }, [section]);
-  useEffect(() => {
-    if (localStorage.getItem('firstPin')) {
-      setOpenModal(true);
-    }
-  }, []);
+
   const likeCheckIn = async (postId: string) => {
     try {
       const data = await ApiService.post(`/checkin/like`, { post_id: postId });
@@ -205,6 +212,19 @@ export default function Home() {
       }
     }
   }, [posts]);
+  useEffect(() => {
+    getDiscoverPosts();
+  }, [section]);
+  useEffect(() => {
+    if (localStorage.getItem('firstPin')) {
+      setOpenModal(true);
+    }
+  }, []);
+  useEffect(() => {
+    if (!user.walletAddress && myWallet) {
+      walletConnect();
+    }
+  }, [myWallet, user]);
   return (
     <LayoutWrapper>
       {
@@ -280,7 +300,7 @@ export default function Home() {
                 <Image alt="search" src={search} className="w-4 aspect-square"></Image>
                 <span>Search</span>
               </div> */}
-              <SearchOne/>
+              <SearchOne />
               <div onClick={() => setOpenMenu(true)} className="w-8 aspect-square flex justify-center items-center">
                 <Image alt="envlp" src={wallet}></Image>
               </div>
@@ -305,7 +325,7 @@ export default function Home() {
                   <MapComponent location={posts.map((post) => {
                     const place: Place = typeof post.place === "string" ? JSON.parse(post.place) : post.place;
                     return { lat: place.geometry.location.lat, lng: place.geometry.location.lng }
-                  })}  showMe={true}/>
+                  })} showMe={true} />
                 </MapProvider>
               </div>
               <div className="w-full flex justify-between items-center ">
@@ -336,7 +356,7 @@ export default function Home() {
                           }
                         </div>
                         <div className="w-full flex justify-start items-start gap-5">
-                          <div className="w-[10%] rounded-full bg-pinner flex justify-center items-center">
+                          <div onClick={() => { router.push('/profile/' + user.id) }} className="w-[10%] rounded-full bg-pinner flex justify-center items-center">
                             <img src={post.user.photoUrl} alt="" className="w-full aspect-square rounded-full" />
                           </div>
                           <div className="w-[90%] flex flex-col justify-start items-start gap-2">

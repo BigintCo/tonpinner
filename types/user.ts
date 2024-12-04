@@ -12,6 +12,7 @@ export type IUser = {
   photoUrl: string,
   followers?: string[],
   followings?: string[],
+  walletAddress: string,
 }
 
 export type IFriends = {

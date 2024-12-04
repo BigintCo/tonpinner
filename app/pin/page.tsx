@@ -20,7 +20,7 @@ import { useAppContext } from "@/providers/app-provider";
 import axios from "axios";
 
 export default function Pin() {
-    const { userToken, handleUserToken, user } = useAppContext();
+    const { user } = useAppContext();
 
     type IPlaces = {
         geometry: {
@@ -74,58 +74,7 @@ export default function Pin() {
         lng: number;
     } | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    // const [placePhoto, setPlacePhoto] = useState<File>();
-    // const videoRef = useRef<HTMLVideoElement | null>(null);
-    // const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    // const [photo, setPhoto] = useState<string | null>(null);
-    // const [isCameraOn, setIsCameraOn] = useState(false);
 
-    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            setSelectedFile(file);
-        }
-    };
-    // const startCamera = async () => {
-    //     try {
-    //         setIsCameraOn(true);
-
-    //         const stream = await navigator.mediaDevices.getUserMedia({
-    //             video: { facingMode: "user" },
-    //         });
-    //         if (videoRef.current) {
-    //             videoRef.current.srcObject = stream;
-    //             videoRef.current.play();
-    //         }
-    //     } catch (error) {
-    //         console.error("Kamera erişimi reddedildi veya başka bir hata oluştu.", error);
-    //     }
-    // };
-    // const takePhoto = () => {
-    //     if (videoRef.current && canvasRef.current) {
-    //         const canvas = canvasRef.current;
-    //         const context = canvas.getContext("2d");
-    //         if (context) {
-    //             canvas.width = videoRef.current.videoWidth;
-    //             canvas.height = videoRef.current.videoHeight;
-    //             context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-
-    //             const imageData = canvas.toDataURL("image/png");
-    //             const byteString = atob(imageData.split(",")[1]); // Base64'ü çöz
-    //             const mimeString = imageData.split(",")[0].split(":")[1].split(";")[0]; // MIME türü
-    //             const arrayBuffer = new Uint8Array(byteString.length);
-    //             for (let i = 0; i < byteString.length; i++) {
-    //                 arrayBuffer[i] = byteString.charCodeAt(i);
-    //             }
-    //             const blob = new Blob([arrayBuffer], { type: mimeString });
-    //             const file = new File([blob], "photo.png", { type: mimeString });
-
-    //             setPhoto(imageData);
-    //             setPlacePhoto(file);
-    //             setIsCameraOn(false);
-    //         }
-    //     }
-    // };
     async function fetchNFTs() {
         const response = await fetch('/api/nfts?wallet=' + myWallet?.account.address);
         if (!response.ok) {
@@ -246,7 +195,6 @@ export default function Pin() {
         }
         return true;
     }
-
     useEffect(() => {
         getNavigation()
     }, []);
