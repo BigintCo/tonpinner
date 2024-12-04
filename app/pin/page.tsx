@@ -59,6 +59,11 @@ export default function Pin() {
         lat: number;
         lng: number;
     };
+    type IBadge = {
+        name: string;
+        description: string;
+        image: string
+    }
     const router = useRouter();
     const path = usePathname();
     const myWallet = useTonWallet();
@@ -69,6 +74,7 @@ export default function Pin() {
     const [nfts, setNfts] = useState<any[] | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [content, setContent] = useState<string>('');
+    const [badge, setBadge] = useState<IBadge>();
     const [currentPosition, setCurrentPosition] = useState<{
         lat: number;
         lng: number;
@@ -154,6 +160,9 @@ export default function Pin() {
                     formData.append('content', content);
                     formData.append('place', JSON.stringify(localStorage.getItem('pinnedPlace')));
                     formData.append('photo', selectedFile);
+                    if (badge) {
+                        formData.append('used_badge', JSON.stringify(badge));
+                    }
                     const { data } = await axios.post(`/checkin/withPhoto`, formData, {
                         baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
                         headers: {
@@ -164,17 +173,20 @@ export default function Pin() {
                     if (data) {
                         toast('Pinned successfully', { type: 'success' });
                         localStorage.setItem("firstPin", "true");
+                        localStorage.removeItem('user_badge');
                         router.push('/');
                     }
                 }
                 else {
                     const { data } = await ApiService.post(`/checkin/withOutPhoto`, {
                         content: content,
-                        place: JSON.stringify(localStorage.getItem('pinnedPlace'))
+                        place: JSON.stringify(localStorage.getItem('pinnedPlace')),
+                        used_badge: badge ? badge : null
                     });
                     if (data) {
                         toast('Pinned successfully', { type: 'success' });
                         localStorage.setItem("firstPin", "true");
+                        localStorage.removeItem('user_badge');
                         router.push('/');
                     }
                 }
@@ -196,7 +208,11 @@ export default function Pin() {
         return true;
     }
     useEffect(() => {
-        getNavigation()
+        getNavigation();
+        const badge = localStorage.getItem('user_badge');
+        if (badge) {
+            setBadge({ name: 'Badge', description: 'Badge', image: badge });
+        }
     }, []);
     useEffect(() => {
         async function loadNFTs() {
@@ -270,11 +286,11 @@ export default function Pin() {
                         <div className="w-full flex justify-start items-center gap-4">
                             {
                                 user?.photoUrl ?
-                                    <div onClick={()=>{router.push('/profile/' + user.id)}} className="w-8 aspect-square rounded-full border-2 border-white">
+                                    <div onClick={() => { router.push('/profile/' + user.id) }} className="w-8 aspect-square rounded-full border-2 border-white">
                                         <Image alt="pp" src={user?.photoUrl} width={25} height={25} className="w-full aspect-square rounded-full" />
                                     </div>
                                     :
-                                    <div onClick={()=>{router.push('/profile/' + user.id)}} className="w-8 aspect-square rounded-full border-2 border-white">
+                                    <div onClick={() => { router.push('/profile/' + user.id) }} className="w-8 aspect-square rounded-full border-2 border-white">
                                         <Image alt="pp" src={human} className="w-14 aspect-square rounded-full" />
                                     </div>
                             }
@@ -297,7 +313,7 @@ export default function Pin() {
                     <div className="w-full flex flex-col justify-start items-center gap-5 px-8 py-2">
                         <div className="w-full flex flex-col justify-start items-center">
                             {/* <button className={`bg-pinner text-white py-2 px-4 rounded-lg text-xs ${isCameraOn ? 'block' : 'hidden'}`} onClick={takePhoto}>Take Photo</button> */}
-                            { selectedFile && (
+                            {selectedFile && (
                                 <div className="flex flex-col justify-start items-center gap-2 w-full h-40">
                                     <img src={URL.createObjectURL(selectedFile)} alt="photo" className="object-contain w-full h-full" />
                                 </div>
@@ -343,7 +359,6 @@ export default function Pin() {
                                 {
                                     nfts && nfts?.length > 0 &&
                                     nfts?.slice(0, 5).map((nft, index) => (
-
                                         <img onClick={() => { router.push('/stickers') }} key={index} src={nft.metadata.image} alt='sticker' className='w-10 aspect-square rounded-lg'></img>
                                     ))
                                 }

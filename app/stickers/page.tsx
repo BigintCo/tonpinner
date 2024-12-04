@@ -6,6 +6,7 @@ import leftArrow from '@/public/images/right-arrow.svg'
 import { useRouter } from 'next/navigation';
 import { useTonWallet } from '@tonconnect/ui-react';
 import LayoutWrapper from '@/layout';
+import { toast } from 'react-toastify';
 
 export default function Stickers() {
     const myWallet = useTonWallet();
@@ -19,6 +20,7 @@ export default function Stickers() {
     }
     const [nfts, setNfts] = useState<any[] | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [selectedBadge, setSelectedBadge] = useState<number | null>(null);
     useEffect(() => { }, [error]);
     useEffect(() => {
         async function loadNFTs() {
@@ -30,6 +32,11 @@ export default function Stickers() {
             }
         }
         loadNFTs();
+        const badge = localStorage.getItem('user_badge');
+        const index = localStorage.getItem('user_badge_index');
+        if (badge && index) {
+            setSelectedBadge(Number(index));
+        }
     }, []);
 
     return (
@@ -42,7 +49,19 @@ export default function Stickers() {
                 <div className='w-full grid grid-cols-12 justify-start items-center gap-2 py-2 px-8'>
                     {
                         nfts?.map((nft, index) => (
-                            <div key={index} className='col-span-3 aspect-square'>
+                            <div onClick={() => {
+                                if (localStorage.getItem('user_badge') === nft.metadata.image) {
+                                    localStorage.removeItem('user_badge');
+                                    localStorage.removeItem('user_badge_index');
+                                    toast.error('Removed from your badge!');
+                                    setSelectedBadge(null);
+                                    return;
+                                }
+                                localStorage.setItem('user_badge', nft.metadata.image);
+                                localStorage.setItem('user_badge_index', index.toString());
+                                setSelectedBadge(index);
+                                toast.success('Sticker added to your badge!');
+                            }} key={index} className={`${selectedBadge === index ? 'border border-blue-400 rounded-lg' : ''} col-span-3 aspect-square p-2`}>
                                 <img src={nft.metadata.image} alt='sticker' className='w-full aspect-square'></img>
                             </div>
                         ))
