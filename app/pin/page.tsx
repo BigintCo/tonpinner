@@ -251,9 +251,7 @@ export default function Pin() {
             getNearMePlaces();
         }
     }, [currentPosition]);
-    useEffect(() => {
-        console.log('badge', badge);
-    }, [badge]);
+
     return (
         <LayoutWrapper>
             <div key={path} className="w-full h-screen overflow-hidden flex flex-col items-start justify-between bg-white relative">
@@ -355,9 +353,11 @@ export default function Pin() {
                                         <Image alt="photo" src={photoCam} className="w-10 aspect-square"></Image>
                                     </div>
                                 </label>
-                                {/* <button onClick={startCamera}>
+                                {
+                                /* <button onClick={startCamera}>
                                     <Image alt="photo" src={photoCam} className="w-10 aspect-square"></Image>
-                                </button> */}
+                                </button> 
+                                */}
                                 <div className="h-[40px] w-[1px] bg-pinner"></div>
                                 {
                                     nfts?.length === 0 &&
@@ -375,13 +375,20 @@ export default function Pin() {
                                         <img onClick={() => { router.push('/stickers') }} key={index} src={nft.metadata.image} alt='sticker' className='w-10 aspect-square rounded-lg'></img>
                                     ))
                                 }
+
                             </div>
 
                             <Image onClick={() => { router.push('/stickers') }} alt="photo" src={points} className="w-6"></Image>
                         </div>
                     </div>
-                    <label htmlFor="" className="w-full px-8 py-2 h-[150px] flex flex-col justify-start items-end gap-2">
-                        <textarea value={content} onChange={(e) => { setContent((e.target.value).toString()) }} className="rounded-lg border p-1 border-blue-600/30 w-full h-full focus-within:outline-none flex justify-start items-start" />
+                    <label htmlFor="" className="w-full px-8 py-2 h-[150px] flex flex-col justify-start items-end gap-2 ">
+                        <div className="relative w-full h-full">
+                            {
+                                badge &&
+                                <img src={JSON.parse(badge).image} alt="" className="absolute w-6 h-6 right-2 bottom-2" />
+                            }
+                            <textarea value={content} onChange={(e) => { setContent((e.target.value).toString()) }} className=" rounded-lg border p-1 border-blue-600/30 w-full h-full focus-within:outline-none flex justify-start items-start" />
+                        </div>
                         <Image alt="add" src={add}></Image>
                     </label>
                     <div className="w-full flex justify-between items-center gap-2 px-8 py-2 ">
