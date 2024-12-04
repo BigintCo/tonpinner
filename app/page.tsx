@@ -103,7 +103,7 @@ export default function Home() {
 
   async function walletConnect() {
     try {
-      if (myWallet) {
+      if (myWallet && !user.walletAddress) {
         const data = await ApiService.post(`/users/walletConnect`, { walletAddress: myWallet.account.address });
         if (!data) {
           toast('An error occurred while connecting wallet! Please connect your wallet again', { type: 'error' });
@@ -223,11 +223,10 @@ export default function Home() {
     }
   }, []);
   useEffect(() => {
-    console.log(myWallet?.account.address, 'myWallet');
-    if (myWallet) {
+    if (myWallet && !user.walletAddress) {
       walletConnect();
     }
-  }, [myWallet]);
+  }, [myWallet, user]);
   return (
     <LayoutWrapper>
       {
@@ -312,12 +311,12 @@ export default function Home() {
           <div className="w-full h-[90vh] overflow-scroll scroll-hidden  relative flex flex-col justify-start items-start gap-2">
             <div className="w-full grid grid-cols-12 justify-center items-center text-sm sticky top-0 z-40">
               <div className="col-span-6">
-                <button onClick={() => { setSection(0) }} className={`${section === 0 ? 'border-[#24A1DE]' : ''} py-2 border-b   w-full flex justify-center items-center bg-white text-pinner`}>
+                <button onClick={() => { setSection(0) }} className={`${section === 0 ? 'border-[#24A1DE]' : ''} py-2 border-b w-full flex justify-center items-center bg-white text-pinner`}>
                   Discover
                 </button>
               </div>
               <div className="col-span-6">
-                <button onClick={() => { setSection(1) }} className={`${section === 1 ? 'border-[#24A1DE]' : ''} py-2 border-b  w-full flex justify-center items-center bg-white text-pinner`}>
+                <button onClick={() => { setSection(1) }} className={`${section === 1 ? 'border-[#24A1DE]' : ''} py-2 border-b w-full flex justify-center items-center bg-white text-pinner`}>
                   Following
                 </button>
               </div>

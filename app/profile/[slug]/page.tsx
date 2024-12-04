@@ -172,7 +172,6 @@ export default function Home() {
       }
     }
   }
-
   useEffect(() => {
     if (user) {
       setUserId(user.id);
@@ -249,7 +248,6 @@ export default function Home() {
         else {
           setLikedPosts((prevLikedPosts) => prevLikedPosts.filter((id) => id !== element._id));
         }
-
       }
     }
     if (userInfo && userInfo.followers && userInfo.followers.includes(user.id)) {

@@ -90,7 +90,7 @@ export default function Home() {
                           <img alt="pp" src={notification.sender_user.photoUrl} className="w-full aspect-square rounded-full" />
                         </div>
                         <div className="w-3/4 flex flex-col gap-1">
-                          <span className="text-xs text-gray-700">{notification.sender_user.firstName} {notification.sender_user.lastName} {notification.notification_type === 'like' ? 'liked' : 'follow' ? 'followed' : 'commented on'} your post</span>
+                          <span className="text-xs text-gray-700">{notification.sender_user.firstName} {notification.sender_user.lastName} {notification.notification_type === 'like' ? 'liked' : notification.notification_type === 'follow' ? 'followed' : 'commented on'} your post</span>
                           <span className="text-xs text-gray-500">
                             {
                               new Date(notification.notification_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })

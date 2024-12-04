@@ -171,7 +171,12 @@ export default function Pin() {
                         },
                     })
                     if (data) {
-                        toast('Pinned successfully', { type: 'success' });
+                        if (JSON.stringify(badge)) {
+                            toast('You earned 777 points!', { type: 'success' });
+                        }
+                        if (!JSON.stringify(badge)) {
+                            toast('You earned 222 points!', { type: 'success' });
+                        }
                         localStorage.setItem("firstPin", "true");
                         localStorage.removeItem('user_badge');
                         router.push('/');
@@ -184,7 +189,13 @@ export default function Pin() {
                         used_badge: badge ? badge : null
                     });
                     if (data) {
-                        toast('Pinned successfully', { type: 'success' });
+                        console.log(badge, 'aaaaaaaa');
+                        if (JSON.stringify(badge)) {
+                            toast('You earned 555 points!', { type: 'success' });
+                        }
+                        if (!JSON.stringify(badge)) {
+                            toast('You earned 111 points!', { type: 'success' });
+                        }
                         localStorage.setItem("firstPin", "true");
                         localStorage.removeItem('user_badge');
                         router.push('/');
